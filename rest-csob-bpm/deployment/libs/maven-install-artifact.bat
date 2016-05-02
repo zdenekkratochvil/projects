@@ -1,0 +1,1 @@
+call mvn install:install-file -Dfile=com.ibm.ws.webservices.thinclient_8.5.0.jar -DgroupId=com.ibm.ws.webservices -DartifactId=thinclient -Dversion=8.5.0 -Dpackaging=jar
