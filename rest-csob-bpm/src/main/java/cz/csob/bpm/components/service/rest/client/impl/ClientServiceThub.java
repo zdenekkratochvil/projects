@@ -17,6 +17,7 @@ import javax.xml.ws.handler.Handler;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import com.ibm.cz.csob.thub.THUBCallSequence;
 import com.ibm.cz.csob.thub.THUBServiceHandler;
@@ -34,9 +35,16 @@ import cz.csob.thub.ws.clients.disprights.GetDrListByProduct_v1HttpProxy;
 import cz.csob.thub.ws.clients.disprights.MetaHeader;
 import cz.csob.thub.ws.clients.disprights.OriginalSource;
 
+@Component("THUBClientService")
 public class ClientServiceThub implements ClientService {
 	
 	private static Logger log = Logger.getLogger(ClientServiceThub.class);
+	
+	// Constants for THUB MetaHeader generation
+	private static final BigInteger HEADER_ID = BigInteger.valueOf(1);
+	private static final BigInteger COMPANY_ID = BigInteger.valueOf(1);
+	private static final String SYSTEM_ID = "DMBPM";
+	private static final String CALL_ID = "REST";
 
 	@Override
 	public ClientListData getClientListByCuid(String cuid) {
@@ -59,10 +67,13 @@ public class ClientServiceThub implements ClientService {
 	@Override
 	public ClientListData getDisponentListByAccountNumber(String accountNumber) {
 		log.debug("Entering getDisponentListByAccountNumber with accountNumber = " + accountNumber);
+		// TODO should be parameter of the call - can be null
+		String piid = "1587898";
 		GetDrListByProduct_v1HttpProxy drListProxy = new GetDrListByProduct_v1HttpProxy();
 		
 		// TODO Add read from cfg
 		drListProxy._getDescriptor().setEndpoint("https://a-thub-dmsbpm.cz.int.intapp.eu:7519/services/distribution/DispositionalRights/getDrListByProduct/v1");
+		//drListProxy._getDescriptor().setEndpoint("http://W2AB0095:8080/cmdb/getdrlistbyproduct_v1");
 
 		// Add SOAP Handler for T-HUB invocation
 		BindingProvider proxyBindingProvider = (BindingProvider) drListProxy._getDescriptor().getProxy();
@@ -76,14 +87,13 @@ public class ClientServiceThub implements ClientService {
 		log.debug("SOAP Handler for T-HUB invocation set. Service endpoint: " + drListProxy._getDescriptor().getEndpoint());
 		
 		MetaHeader metaHeader = new MetaHeader();
-		metaHeader.setHeaderVersion(BigInteger.valueOf(1));
+		metaHeader.setHeaderVersion(HEADER_ID);
 		// TODO Extend call with ProcessId
-		String sessionId = generateSessionID("1587898", "P001");
+		String sessionId = generateSessionID(piid, CALL_ID);
 		//metaHeader.setSessionID("NynnDMUCFfnappczfetinta800000022");
 		metaHeader.setSessionID(sessionId);
-		//metaHeader.setBusinessUniqueID("121212121212");
-		String businessSessionId = generateBusinessSessionID("1587898", "P001");
-		// metaHeader.setBusinessUniqueID("NynnDMUCFfnappczfetinta800000022");
+		String businessSessionId = generateBusinessSessionID(piid, CALL_ID);
+		//metaHeader.setBusinessUniqueID("NynnDMUCFfnappczfetinta800000022");
 		metaHeader.setBusinessUniqueID(businessSessionId);
 		OriginalSource origSrc = new OriginalSource();
 		try {
@@ -91,12 +101,11 @@ public class ClientServiceThub implements ClientService {
 			XMLGregorianCalendar timeStamp;
 			timeStamp = DatatypeFactory.newInstance().newXMLGregorianCalendar(currentCal);
 			origSrc.setTimeStamp(timeStamp);
-		} catch (DatatypeConfigurationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (DatatypeConfigurationException dce) {
+			log.error("Problem to generate GregorianCalendar. Probably the THUB call will fail", dce);			
 		}
-		origSrc.setSystem("DMBPM");
-		origSrc.setCompany(BigInteger.valueOf(1));
+		origSrc.setSystem(SYSTEM_ID);
+		origSrc.setCompany(COMPANY_ID);
 		
 		// TODO Add correct mapped User ID
 		origSrc.setUser("0");
@@ -114,6 +123,7 @@ public class ClientServiceThub implements ClientService {
 		rightTypeList.getRightType().add(BigInteger.valueOf(2));
 		productFilter.setRightTypeList(rightTypeList);
 		filterList.getProductFilter().add(productFilter);
+		getDrListByProductReq.setProductFilterList(filterList);
 		
 		try {
 			GetDrListByProductRes dispList = drListProxy.getDrListByProductV1(getDrListByProductReq, metaHeader);
@@ -148,7 +158,7 @@ public class ClientServiceThub implements ClientService {
 			_callId = "SRVR";
 		
 		sessionIdSB.append(_callId);
-		sessionIdSB.append("DMBPM");
+		sessionIdSB.append(SYSTEM_ID);
 		
 		String hostName;
 		try {
@@ -208,7 +218,7 @@ public class ClientServiceThub implements ClientService {
 			_callId = "SRVR";
 		
 		sessionIdSB.append(_callId);
-		sessionIdSB.append("DMBPM");
+		sessionIdSB.append(SYSTEM_ID);
 		
 		sessionIdSB.append(_processId);
 		
