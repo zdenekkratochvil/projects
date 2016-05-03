@@ -22,7 +22,7 @@ public class WebAppConfig extends AbstractAnnotationConfigDispatcherServletIniti
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return new Class<?>[] { CSOBBPMServiceConfig.class };
+		return new Class<?>[] { CSOBBPMServiceConfig.class, SecurityConfig.class };
 	}
 	
 	@Override
