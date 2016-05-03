@@ -24,7 +24,14 @@ import com.ibm.cz.csob.thub.THUBServiceHandler;
 
 import cz.csob.bpm.components.fes.rest.dto.client.ClientListData;
 import cz.csob.bpm.components.service.rest.client.ClientService;
-import cz.csob.thub.ws.clients.disprights.GeneralFaultV1;
+import cz.csob.thub.ws.clients.clientlist.GetClientListReq;
+import cz.csob.thub.ws.clients.clientlist.GetClientListReq.Data.Requestset;
+import cz.csob.thub.ws.clients.clientlist.GetClientListReq.Data.Requestset.Request;
+import cz.csob.thub.ws.clients.clientlist.GetClientListRes;
+import cz.csob.thub.ws.clients.clientlist.GetClientListRes.Data.Resultset.Result;
+import cz.csob.thub.ws.clients.clientlist.GetClientListRes.Data.Resultset.Result.Company;
+import cz.csob.thub.ws.clients.clientlist.GetClientListRes.Data.Resultset.Result.Company.CompanyRow;
+import cz.csob.thub.ws.clients.clientlist.GetClientList_v2HttpProxy;
 import cz.csob.thub.ws.clients.disprights.GetDrListByProductReq;
 import cz.csob.thub.ws.clients.disprights.GetDrListByProductReq.ProductFilterList;
 import cz.csob.thub.ws.clients.disprights.GetDrListByProductReq.ProductFilterList.ProductFilter;
@@ -32,8 +39,6 @@ import cz.csob.thub.ws.clients.disprights.GetDrListByProductReq.ProductFilterLis
 import cz.csob.thub.ws.clients.disprights.GetDrListByProductRes;
 import cz.csob.thub.ws.clients.disprights.GetDrListByProductRes.Resultset.Result.RightList;
 import cz.csob.thub.ws.clients.disprights.GetDrListByProduct_v1HttpProxy;
-import cz.csob.thub.ws.clients.disprights.MetaHeader;
-import cz.csob.thub.ws.clients.disprights.OriginalSource;
 
 @Component("THUBClientService")
 public class ClientServiceThub implements ClientService {
@@ -67,10 +72,77 @@ public class ClientServiceThub implements ClientService {
 	@Override
 	public ClientListData getDisponentListByAccountNumber(String accountNumber) {
 		log.debug("Entering getDisponentListByAccountNumber with accountNumber = " + accountNumber);
+		
 		// TODO should be parameter of the call - can be null
 		String piid = "1587898";
-		GetDrListByProduct_v1HttpProxy drListProxy = new GetDrListByProduct_v1HttpProxy();
 		
+		// Init proxies - set endpoint and handler
+		GetDrListByProduct_v1HttpProxy drListProxy = setupGetDrListByProduct();
+		GetClientList_v2HttpProxy cliListProxy = setupGetGetClientList();
+		
+		cz.csob.thub.ws.clients.disprights.MetaHeader drListMetaHeader = getDrListMetaheader(piid);
+		
+		log.debug("Set GetDrListByProduct data...");
+		GetDrListByProductReq getDrListByProductReq = new GetDrListByProductReq();
+		ProductFilterList filterList = new ProductFilterList();
+		ProductFilter productFilter = new ProductFilter();
+		
+		// TODO should be call parameter 
+		productFilter.setProductNumber("9934715");
+		//productFilter.setProductNumber("9946126");
+		
+		// Call constants
+		productFilter.setHomeCurrency(BigInteger.valueOf(39));
+		productFilter.setBankSystem(BigInteger.valueOf(2));
+		RightTypeList rightTypeList = new RightTypeList();
+		rightTypeList.getRightType().add(BigInteger.valueOf(2));
+		productFilter.setRightTypeList(rightTypeList);
+		filterList.getProductFilter().add(productFilter);
+		getDrListByProductReq.setProductFilterList(filterList);
+		
+		try {
+			GetDrListByProductRes dispList = drListProxy.getDrListByProductV1(getDrListByProductReq, drListMetaHeader);
+			BigInteger accountOwnerId = dispList.getResultset().getResult().get(0).getCuid();
+			log.debug("Account owner CUID: " + accountOwnerId.toString());
+			
+			cz.csob.thub.ws.clients.clientlist.MetaHeader cliListListMetaHeader = getCliListMetaheader(piid);
+			GetClientListReq getClientListReqV2 = new GetClientListReq();
+			cz.csob.thub.ws.clients.clientlist.GetClientListReq.Data clientListReqData = new cz.csob.thub.ws.clients.clientlist.GetClientListReq.Data();
+			Requestset clientListReqSet = new Requestset();
+			Request clientListReqRequest = new Request();
+			clientListReqRequest.setIdCmdPartyPk(accountOwnerId);
+			clientListReqSet.getRequest().add(clientListReqRequest);			
+			clientListReqData.setRequestset(clientListReqSet);
+			getClientListReqV2.setData(clientListReqData);
+			try {
+				GetClientListRes ownerList = cliListProxy.getClientListV2(getClientListReqV2, cliListListMetaHeader);
+				// Result cliListResult = ownerList.getData().getResultset().getResult().get(0);
+				for (Result cliListResult : ownerList.getData().getResultset().getResult()) {
+					log.debug("Client result: " + cliListResult.getClass());
+					// Person cliListPersonList = (Person) cliListResult.getPerson().getPersonRow();
+					for (CompanyRow row: cliListResult.getCompany().getCompanyRow()) {
+						log.debug("Client person: " + row.getNameOfCompanyLong());
+					}
+				}
+				
+				//log.debug("Account owner info: " + ownerList.getData().getResultset().getResult().get(0).getPerson().getPersonRow().get(0).getFictBirthNumber());
+			} catch (cz.csob.thub.ws.clients.clientlist.GeneralFaultV1 clfe) {
+				log.error("THUB Service GetClientList_v2 failed for CUID: ", clfe);			}
+			
+			RightList rightList = (RightList) dispList.getResultset().getResult().get(0).getRightList();
+			log.debug("Found right: " + rightList.getRight().get(0).getIdCmdRight());
+			
+		} catch (cz.csob.thub.ws.clients.disprights.GeneralFaultV1 drlfe) {
+			log.error("THUB Service GetDrListByProduct failed ", drlfe);
+		}
+		
+		return null;
+	}
+
+	private GetDrListByProduct_v1HttpProxy setupGetDrListByProduct() {
+		GetDrListByProduct_v1HttpProxy drListProxy = new GetDrListByProduct_v1HttpProxy();
+		//https://a-thub-dmsucf.cz.int.intapp.eu:7519/services/distribution/ClientIdentification/getClientList/v2		
+	
 		// TODO Add read from cfg
 		drListProxy._getDescriptor().setEndpoint("https://a-thub-dmsbpm.cz.int.intapp.eu:7519/services/distribution/DispositionalRights/getDrListByProduct/v1");
 		//drListProxy._getDescriptor().setEndpoint("http://W2AB0095:8080/cmdb/getdrlistbyproduct_v1");
@@ -85,8 +157,32 @@ public class ClientServiceThub implements ClientService {
 		handlerChain.add(new THUBServiceHandler());
 		proxyBinding.setHandlerChain(handlerChain);
 		log.debug("SOAP Handler for T-HUB invocation set. Service endpoint: " + drListProxy._getDescriptor().getEndpoint());
+		return drListProxy;
+	}
+	
+	private GetClientList_v2HttpProxy setupGetGetClientList() {
+		GetClientList_v2HttpProxy cliListProxy = new GetClientList_v2HttpProxy();
+		//https://a-thub-dmsucf.cz.int.intapp.eu:7519/services/distribution/ClientIdentification/getClientList/v2		
+	
+		// TODO Add read from cfg
+		cliListProxy ._getDescriptor().setEndpoint("https://a-thub-dmsucf.cz.int.intapp.eu:7519/services/distribution/ClientIdentification/getClientList/v2");
+
+		// Add SOAP Handler for T-HUB invocation
+		BindingProvider proxyBindingProvider = (BindingProvider) cliListProxy ._getDescriptor().getProxy();
+		Binding proxyBinding = proxyBindingProvider.getBinding();
+		List<Handler> handlerChain = proxyBinding.getHandlerChain();
+		if (handlerChain == null) {			
+			handlerChain = new ArrayList<Handler>();
+		}	
+		handlerChain.add(new THUBServiceHandler());
+		proxyBinding.setHandlerChain(handlerChain);
+		log.debug("SOAP Handler for T-HUB invocation set. Service endpoint: " + cliListProxy ._getDescriptor().getEndpoint());
+		return cliListProxy;
+	}
+	
+	private cz.csob.thub.ws.clients.disprights.MetaHeader getDrListMetaheader(String piid) {
 		
-		MetaHeader metaHeader = new MetaHeader();
+		cz.csob.thub.ws.clients.disprights.MetaHeader metaHeader = new cz.csob.thub.ws.clients.disprights.MetaHeader();
 		metaHeader.setHeaderVersion(HEADER_ID);
 		// TODO Extend call with ProcessId
 		String sessionId = generateSessionID(piid, CALL_ID);
@@ -95,7 +191,7 @@ public class ClientServiceThub implements ClientService {
 		String businessSessionId = generateBusinessSessionID(piid, CALL_ID);
 		//metaHeader.setBusinessUniqueID("NynnDMUCFfnappczfetinta800000022");
 		metaHeader.setBusinessUniqueID(businessSessionId);
-		OriginalSource origSrc = new OriginalSource();
+		cz.csob.thub.ws.clients.disprights.OriginalSource origSrc = new cz.csob.thub.ws.clients.disprights.OriginalSource();
 		try {
 			GregorianCalendar currentCal = new GregorianCalendar();
 			XMLGregorianCalendar timeStamp;
@@ -110,33 +206,40 @@ public class ClientServiceThub implements ClientService {
 		// TODO Add correct mapped User ID
 		origSrc.setUser("0");
 		metaHeader.setOriginalSource(origSrc);
+
+		return metaHeader;
 		
-		log.debug("Set GetDrListByProduct data...");
-		GetDrListByProductReq getDrListByProductReq = new GetDrListByProductReq();
-		ProductFilterList filterList = new ProductFilterList();
-		ProductFilter productFilter = new ProductFilter();
-		productFilter.setProductNumber("9934715");
-		//productFilter.setProductNumber("9946126");
-		productFilter.setHomeCurrency(BigInteger.valueOf(39));
-		productFilter.setBankSystem(BigInteger.valueOf(2));
-		RightTypeList rightTypeList = new RightTypeList();
-		rightTypeList.getRightType().add(BigInteger.valueOf(2));
-		productFilter.setRightTypeList(rightTypeList);
-		filterList.getProductFilter().add(productFilter);
-		getDrListByProductReq.setProductFilterList(filterList);
+	}
+
+	private cz.csob.thub.ws.clients.clientlist.MetaHeader getCliListMetaheader(String piid) {
 		
+		cz.csob.thub.ws.clients.clientlist.MetaHeader metaHeader = new cz.csob.thub.ws.clients.clientlist.MetaHeader();
+		metaHeader.setHeaderVersion(HEADER_ID);
+		// TODO Extend call with ProcessId
+		String sessionId = generateSessionID(piid, CALL_ID);
+		//metaHeader.setSessionID("NynnDMUCFfnappczfetinta800000022");
+		metaHeader.setSessionID(sessionId);
+		String businessSessionId = generateBusinessSessionID(piid, CALL_ID);
+		//metaHeader.setBusinessUniqueID("NynnDMUCFfnappczfetinta800000022");
+		metaHeader.setBusinessUniqueID(businessSessionId);
+		cz.csob.thub.ws.clients.clientlist.OriginalSource origSrc = new cz.csob.thub.ws.clients.clientlist.OriginalSource();
 		try {
-			GetDrListByProductRes dispList = drListProxy.getDrListByProductV1(getDrListByProductReq, metaHeader);
-			
-			RightList rightList = (RightList) dispList.getResultset().getResult().get(0).getRightList();
-			log.debug("Found right: " + rightList.getRight().get(0).getIdCmdRight());
-			
-		} catch (GeneralFaultV1 e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			GregorianCalendar currentCal = new GregorianCalendar();
+			XMLGregorianCalendar timeStamp;
+			timeStamp = DatatypeFactory.newInstance().newXMLGregorianCalendar(currentCal);
+			origSrc.setTimeStamp(timeStamp);
+		} catch (DatatypeConfigurationException dce) {
+			log.error("Problem to generate GregorianCalendar. Probably the THUB call will fail", dce);			
 		}
+		origSrc.setSystem(SYSTEM_ID);
+		origSrc.setCompany(COMPANY_ID);
 		
-		return null;
+		// TODO Add correct mapped User ID
+		origSrc.setUser("0");
+		metaHeader.setOriginalSource(origSrc);
+
+		return metaHeader;
+		
 	}
 
 	/**

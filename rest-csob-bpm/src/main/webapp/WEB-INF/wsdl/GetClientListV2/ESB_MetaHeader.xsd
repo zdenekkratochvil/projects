@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--edited with XMLSpy v2012 rel. 2 sp1 (x64) (http://www.altova.com) by KBC Global Services NV (KBC Global Services NV)--><xs:schema targetNamespace="http://ed6.kbc.com/metaheader.1" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:meta="http://ed6.kbc.com/metaheader.1">
+  <xs:element name="MetaHeader">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="HeaderVersion" type="xs:integer" default="5">
+          <xs:annotation>
+            <xs:documentation>Version of MetaHeader. Must be set according implemented version of metaheader. Value of current MetaHeader is defined in default value of element. Incremented when some backward-compatible changes are made.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SessionID" type="meta:SessionID">
+          <xs:annotation>
+            <xs:documentation>SID of message; Use as if it was defined String(32) exactly! 
+							Lenght of more than 32 is allowed only for backward compatibility purposes. In that case, last 32 char is used on THUB and the rest of characters preceding these 32 should be set to '0')
+							XM.MH.SID</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SessionSequenceNumber" type="xs:integer" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>Message Sequence. SessionID + SessionSequenceNumber should be unique</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="BusinessProcessOriginator" type="meta:BusinessProcessOriginator" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>Source application where business process was started.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="BusinessUniqueID">
+          <xs:annotation>
+            <xs:documentation>Unique identifier of business transaction.</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1"/>
+              <xs:maxLength value="32"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="BuidSequence" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>Indicates the order and nesting of processing inside a Business Transaction.</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1"/>
+              <xs:maxLength value="64"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="ReleaseVersion" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>CST 1336 DataId. This value determines which "release version" of backend will be called. If not present, "current fullpark version" of backend will be called.</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:nonNegativeInteger">
+              <xs:totalDigits value="10"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="Data" type="meta:Data" minOccurs="0"/>
+        <xs:element name="OriginalSource" type="meta:OriginalSource">
+          <xs:annotation>
+            <xs:documentation>Source application where message was created.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="UltimateTarget" type="meta:UltimateTarget" minOccurs="0"/>
+        <xs:element name="QoS" type="meta:QualityOfService" minOccurs="0"/>
+        <xs:element name="Retry" type="meta:Retry" minOccurs="0"/>
+        <xs:element name="Extension" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence minOccurs="0">
+              <xs:element name="OriginalSource" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence minOccurs="0">
+                    <xs:element name="Brand" type="xs:nonNegativeInteger" minOccurs="0"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="Data">
+    <xs:sequence>
+      <xs:element name="Type">
+        <xs:annotation>
+          <xs:documentation>Message Type of the Message - eg: "GetFullClient"
+						XM.MH.MT</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Version" type="xs:decimal">
+        <xs:annotation>
+          <xs:documentation>Message Version of the Message - eg: "1", "1.1"
+						XM.MH.MV</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:group name="Application">
+    <xs:sequence>
+      <xs:element name="System">
+        <xs:annotation>
+          <xs:documentation>CODE from CST320, eg "M24X7", "ELBIB"</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="32"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Company" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation>Brand from CST229
+						1 - CSOB CZ
+						2 - CSOB SK
+						3 - PSB</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Function" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>NONmandatory element, that could be used as more precise identifier of source application, when CST320 system is too high-level</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="32"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="UseCaseId" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:group>
+  <xs:complexType name="BusinessProcessOriginator">
+    <xs:sequence>
+      <xs:element name="TimeStamp" type="xs:dateTime" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Date and time, when message was created
+						XM.MH.OT</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="User" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>DataID of user from CST335</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="32"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:group ref="meta:Application"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="OriginalSource">
+    <xs:sequence>
+      <xs:element name="TimeStamp" type="xs:dateTime">
+        <xs:annotation>
+          <xs:documentation>Date and time, when message was created
+						XM.MH.OT</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="User">
+        <xs:annotation>
+          <xs:documentation>DataID of user from CST335</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="32"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:group ref="meta:Application"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="UltimateTarget">
+    <xs:sequence>
+      <xs:group ref="meta:Application"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="QualityOfService">
+    <xs:sequence>
+      <xs:element name="TimeToLive" type="xs:integer" minOccurs="0"/>
+      <xs:element name="Priority" type="xs:integer" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Retry">
+    <xs:sequence>
+      <xs:element name="Counter" type="xs:integer"/>
+      <xs:element name="MaxAttempts" type="xs:integer" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Stadium">
+    <xs:sequence>
+      <xs:element name="StadiumCode" type="meta:StadiumCode"/>
+      <xs:element name="StadiumDescription" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="256"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="StadiumCode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="IN"/>
+      <xs:enumeration value="OUT"/>
+      <xs:enumeration value="INT_IN"/>
+      <xs:enumeration value="INT_OUT"/>
+      <xs:enumeration value="FILTER"/>
+      <xs:enumeration value="ERROR"/>
+      <xs:enumeration value="TTL_EXCE"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="SessionID">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[A-Za-z0-9]{32,48}"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" name="ClientIdentification" targetNamespace="http://www.csob.cz/distribution/ClientIdentification" xmlns:GetClientIdentification_v1="http://www.csob.cz/distribution/ClientIdentification/getClientIdentification/v1" xmlns:GetClientList_v1="http://www.csob.cz/distribution/ClientIdentification/getClientList/v1" xmlns:GetClientList_v2="http://www.csob.cz/distribution/ClientIdentification/getClientList/v2" xmlns:GetPrescoring_v1="http://www.csob.cz/distribution/ClientIdentification/getPrescoring/v1" xmlns:meta="http://ed6.kbc.com/metaheader.1" xmlns:ns0="http://services.csob.cz/base_v1" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.csob.cz/distribution/ClientIdentification" xmlns:wmqservice="http://www.ibm.com/xmlns/prod/wmq/bindings/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <types>
+    <xsd:schema targetNamespace="http://www.csob.cz/distribution/ClientIdentification">
+      <xsd:import namespace="http://www.csob.cz/distribution/ClientIdentification/getClientList/v2" schemaLocation="GetClientListReq.v2.xsd"/>
+      <xsd:import namespace="http://www.csob.cz/distribution/ClientIdentification/getClientList/v2" schemaLocation="GetClientListRes.v2.xsd"/>
+      <xsd:import namespace="http://ed6.kbc.com/metaheader.1" schemaLocation="ESB_MetaHeader.xsd"/>
+      <xsd:import namespace="http://services.csob.cz/base_v1" schemaLocation="GeneralFault_v1.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="GetClientListReq_v2">
+    <part element="GetClientList_v2:GetClientListReq" name="GetClientListReq_v2"/>
+  </message>
+  <message name="GetClientListRes_v2">
+    <part element="GetClientList_v2:GetClientListRes" name="GetClientListRes_v2"/>
+  </message>
+  <message name="MetaHeader_v1">
+    <part element="meta:MetaHeader" name="MetaHeader_v1"/>
+  </message>
+  <message name="GeneralFault_v1">
+    <part element="ns0:GeneralFault" name="GeneralFault_v1"/>
+  </message>
+
+
+  <portType name="GetClientList_v2PortType">
+    <operation name="GetClientList_v2">
+      <input message="tns:GetClientListReq_v2" name="GetClientListReq_v2"/>
+      <output message="tns:GetClientListRes_v2" name="GetClientListRes_v2"/>
+      <fault message="tns:GeneralFault_v1" name="GeneralFault_v1"/>
+    </operation>
+  </portType>
+
+
+  <binding name="GetClientList_v2PortTypeBindingHttp" type="tns:GetClientList_v2PortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="GetClientList_v2">
+      <soap:operation soapAction="http://www.csob.cz/distribution/ClientIdentification/getClientList/v2" style="document"/>
+      <input name="GetClientListReq_v2">
+        <soap:header message="tns:MetaHeader_v1" part="MetaHeader_v1" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output name="GetClientListRes_v2">
+        <soap:body use="literal"/>
+      </output>
+      <fault name="GeneralFault_v1">
+        <soap:fault name="GeneralFault_v1" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="ClientIdentification">
+
+
+    <port binding="tns:GetClientList_v2PortTypeBindingHttp" name="GetClientList_v2PortTypeBindingHttpPort">
+      <soap:address location="https://:/services/distribution/ClientIdentification/getClientList/v2"/>
+    </port>
+  </service>
+</definitions>

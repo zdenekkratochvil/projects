@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--edited with XMLSpy v2011 rel. 3 (http://www.altova.com) by Lub (KBC GLOBAL SERVICES NV)--><xs:schema targetNamespace="http://www.csob.cz/common/v1" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:tns="http://www.csob.cz/common/v1" xmlns:coreCommon="http://www.csob.cz/common/core" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://www.csob.cz/common/core" schemaLocation="CommonSimple.xsd"/>
+  <xs:element name="Paging" type="tns:PagingType"/>
+  <xs:complexType name="PagingType">
+    <xs:sequence>
+      <xs:sequence minOccurs="0">
+        <xs:element ref="coreCommon:PageNumber"/>
+        <xs:element ref="coreCommon:RowsPerPage"/>
+      </xs:sequence>
+      <xs:element ref="coreCommon:ResultSetMax"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PagingChoice" type="tns:PagingChoiceType"/>
+  <xs:complexType name="PagingChoiceType">
+    <xs:choice>
+      <xs:sequence>
+        <xs:element ref="coreCommon:PageNumber"/>
+        <xs:element ref="coreCommon:RowsPerPage"/>
+      </xs:sequence>
+      <xs:element ref="coreCommon:ResultSetMax"/>
+    </xs:choice>
+  </xs:complexType>
+  <!--DKU note -newest-->
+  <xs:complexType name="PagingOptType">
+    <xs:sequence>
+      <xs:sequence minOccurs="0">
+        <xs:element ref="coreCommon:PageNumber"/>
+        <xs:element ref="coreCommon:RowsPerPage"/>
+      </xs:sequence>
+      <xs:element ref="coreCommon:ResultSetMax" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PagingOptResSetMax" type="tns:PagingOptResSetMaxType"/>
+  <xs:complexType name="PagingOptResSetMaxType">
+    <xs:sequence>
+      <xs:element ref="coreCommon:PageNumber"/>
+      <xs:element ref="coreCommon:RowsPerPage"/>
+      <xs:element ref="coreCommon:ResultSetMax" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PagingRes" type="tns:PagingResType"/>
+  <xs:complexType name="PagingResType">
+    <xs:sequence>
+      <xs:element ref="coreCommon:CurrentCount"/>
+      <xs:element ref="coreCommon:ResultSetCount"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SortBy1" type="tns:SortByType"/>
+  <xs:element name="SortBy2" type="tns:SortByType"/>
+  <xs:complexType name="SortByType">
+    <xs:sequence>
+      <xs:element ref="coreCommon:SortAttribute"/>
+      <xs:element ref="coreCommon:SortDirection" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--for forward compatibility purpose-->
+  <xs:complexType name="ForwardCompatibilityPlaceholderType">
+    <xs:sequence>
+      <xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="20"/>
+      <!--<xsd:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>-->
+    </xs:sequence>
+    <xs:anyAttribute/>
+  </xs:complexType>
+</xs:schema>

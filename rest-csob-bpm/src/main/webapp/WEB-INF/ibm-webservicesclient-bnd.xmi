@@ -3,4 +3,7 @@
   <serviceRefs xmi:id="ServiceRef_1462287018940" serviceRefLink="service/DispositionalRights">
     <portQnameBindings xmi:id="PortQnameBinding_1462287018940" portQnameNamespaceLink="http://www.csob.cz/distribution/DispositionalRights" portQnameLocalNameLink="GetDrListByProduct_v1PortTypeBindingHttpPort" overriddenEndpointURI="https://:/msg/queue/?transportType=TCP&amp;channelName=SCC_CHANNEL"/>
   </serviceRefs>
+  <serviceRefs xmi:id="ServiceRef_1462298770873" serviceRefLink="service/ClientIdentification">
+    <portQnameBindings xmi:id="PortQnameBinding_1462298770873" portQnameNamespaceLink="http://www.csob.cz/distribution/ClientIdentification" portQnameLocalNameLink="GetClientList_v2PortTypeBindingHttpPort" overriddenEndpointURI="https://:/services/distribution/ClientIdentification/getClientList/v2"/>
+  </serviceRefs>
 </com.ibm.etools.webservice.wscbnd:ClientBinding>

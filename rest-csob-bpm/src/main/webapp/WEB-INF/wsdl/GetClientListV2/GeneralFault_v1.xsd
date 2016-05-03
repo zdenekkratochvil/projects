@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--edited with XMLSpy v2008 sp1 (http://www.altova.com) by KBC GLOBAL SERVICES NV (KBC GLOBAL SERVICES NV)--><xs:schema targetNamespace="http://services.csob.cz/base_v1" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:msg="http://services.csob.cz/base_v1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="GeneralFault" type="msg:GeneralFault"/>
+  <xs:complexType name="GeneralFault">
+    <xs:sequence>
+      <xs:element name="Errors">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Error" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="Code" type="xs:string">
+                    <xs:annotation>
+                      <xs:documentation>CST 35 Code</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="Text" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                      <xs:documentation>CST 35 DescEN</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="Parameters" minOccurs="0">
+                    <xs:annotation>
+                      <xs:documentation>hodnoty vztahujici se k obsahu chybove zpravy zejmena charakteru aplikacni chyby, ktera ma smysl byt zobrazena napr. na front end. Napr. v chybove zprave „nespravne ucty {0}, {1}“ se hodnoty techto uctu mohou vyskytovat v sekci Parameters.</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="Parameter" type="xs:string" maxOccurs="unbounded"/>
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                  <xs:element name="Elements" minOccurs="0">
+                    <xs:annotation>
+                      <xs:documentation>oznaceni elementu vstupni zpravy, ke kteremu se chyba vztahuje. Napr. schazi element na vstupni zprave, jehoz povinnost je codition based.  Jindy byva vyuzito pro vypsani kontextu systemove chyby.</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="Element" maxOccurs="unbounded">
+                          <xs:complexType>
+                            <xs:sequence>
+                              <xs:element name="Name" type="xs:string"/>
+                              <xs:element name="Value" type="xs:string"/>
+                            </xs:sequence>
+                          </xs:complexType>
+                        </xs:element>
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
