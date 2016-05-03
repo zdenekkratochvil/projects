@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.csob.cz/distribution/DispositionalRights/getDrListByProduct/v1" xmlns:ns1="http://www.csob.cz/common/v1" xmlns:tns="http://www.csob.cz/distribution/DispositionalRights/getDrListByProduct/v1">
+  <xsd:annotation>
+    <xsd:documentation>Purchase order schema for Example.com.
+Copyright 2000 Example.com. All rights reserved.</xsd:documentation>
+  </xsd:annotation>
+  <xsd:import namespace="http://www.csob.cz/common/v1" schemaLocation="CommonComplex.v1.xsd"/>
+  <xsd:element name="GetDrListByProductRes">
+    <xsd:annotation>
+      <xsd:documentation>Vrátí seznam dispozičních oprávnění pro daný účet.
+---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1
+Element complex type: {http://xmlns.kbc.com/CLD/SERVICES_THCI/GetDrListByProductNoRes_v1}Local complex type</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Resultset">
+          <xsd:annotation>
+            <xsd:documentation/>
+          </xsd:annotation>
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element maxOccurs="unbounded" name="Result">
+                <xsd:annotation>
+                  <xsd:documentation/>
+                </xsd:annotation>
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="SequenceNumber" type="xsd:integer">
+                      <xsd:annotation>
+                        <xsd:documentation>Pro parovani request/response
+---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1/Data/RESULTSET/RESULT/SEQUENCE_NUMBER
+Element simple type: {http://xmlns.kbc.com/CLD/COMMON_V1}CT_NUMBER</xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="RightList">
+                      <xsd:annotation>
+                        <xsd:documentation/>
+                      </xsd:annotation>
+                      <xsd:complexType>
+                        <xsd:sequence>
+                          <xsd:element maxOccurs="unbounded" minOccurs="1" name="Right">
+                            <xsd:annotation>
+                              <xsd:documentation/>
+                            </xsd:annotation>
+                            <xsd:complexType>
+                              <xsd:sequence>
+                                <xsd:element maxOccurs="1" minOccurs="0" name="IdCmdRight" type="xsd:integer">
+                                  <xsd:annotation>
+                                    <xsd:documentation>ID dispozicniho opravneni
+---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1/Data/RESULTSET/RESULT/CMD_RIGHT_LIST/CMD_RIGHT/ID_CMD_RIGHT
+Element simple type: {http://xmlns.kbc.com/CLD/CMDB/DR_RIGHT_V1}ID_CMD_RIGHT</xsd:documentation>
+                                  </xsd:annotation>
+                                </xsd:element>
+                                <xsd:element name="OrganisationUnit" type="xsd:integer">
+                                  <xsd:annotation>
+                                    <xsd:documentation>Dataid z cst 336
+---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1/Data/RESULTSET/RESULT/CMD_RIGHT_LIST/CMD_RIGHT/ORGANISATION_UNIT
+Element simple type: {http://xmlns.kbc.com/CLD/CMDB/DR_RIGHT_V1}ORGANIZATION_UNIT</xsd:documentation>
+                                  </xsd:annotation>
+                                </xsd:element>
+                                <xsd:element name="LimitationType" type="xsd:integer">
+                                  <xsd:annotation>
+                                    <xsd:documentation>Dataid z cst 304 - typ limitu
+---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1/Data/RESULTSET/RESULT/CMD_RIGHT_LIST/CMD_RIGHT/LIMITATION_TYPE
+Element simple type: {http://xmlns.kbc.com/CLD/CMDB/DR_RIGHT_V1}LIMITATION_TYPE</xsd:documentation>
+                                  </xsd:annotation>
+                                </xsd:element>
+                                <xsd:element name="RightStatus" type="xsd:integer">
+                                  <xsd:annotation>
+                                    <xsd:documentation>Dataid z cst 303 - status dispozicniho opravneni
+---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1/Data/RESULTSET/RESULT/CMD_RIGHT_LIST/CMD_RIGHT/RIGHT_STATUS
+Element simple type: {http://xmlns.kbc.com/CLD/CMDB/DR_RIGHT_V1}RIGHT_STATUS</xsd:documentation>
+                                  </xsd:annotation>
+                                </xsd:element>
+                                <xsd:element maxOccurs="1" minOccurs="0" name="IdRightExternal" type="xsd:integer">
+                                  <xsd:annotation>
+                                    <xsd:documentation>ID z externího systému. Mělo by být unikátní v kombinaci s RIGHT_STATUS
+
+---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1/Data/RESULTSET/RESULT/CMD_RIGHT_LIST/CMD_RIGHT/ID_RIGHT_EXTERNAL
+Element simple type: {http://xmlns.kbc.com/CLD/CMDB/DR_RIGHT_V1}ID_RIGHT_EXTERNAL</xsd:documentation>
+                                  </xsd:annotation>
+                                </xsd:element>
+                                <xsd:element maxOccurs="1" name="RightType" type="xsd:integer">
+                                  <xsd:annotation>
+                                    <xsd:documentation>Dataid z cst 810, Nemůže být prázdné, když nepřijde je nastaven default 1 – při zápise DR. V produkční DB neexistuje
+záznam, který by tuto hodnotu neměl vyplněnu
+
+---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1/Data/RESULTSET/RESULT/CMD_RIGHT_LIST/CMD_RIGHT/RIGHT_TYPE
+Element simple type: {http://xmlns.kbc.com/CLD/CMDB/DR_RIGHT_V1}RIGHT_TYPE</xsd:documentation>
+                                  </xsd:annotation>
+                                </xsd:element>
+                                <xsd:element maxOccurs="1" minOccurs="0" name="ValidFrom" type="xsd:date">
+                                  <xsd:annotation>
+                                    <xsd:documentation>Pocatecni datum platnosti opravneni
+---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1/Data/RESULTSET/RESULT/CMD_RIGHT_LIST/CMD_RIGHT/VALID_FROM
+Element simple type: {http://xmlns.kbc.com/CLD/CMDB/DR_RIGHT_V1}VALID_FROM</xsd:documentation>
+                                  </xsd:annotation>
+                                </xsd:element>
+                                <xsd:element maxOccurs="1" minOccurs="0" name="ValidTo" type="xsd:date">
+                                  <xsd:annotation>
+                                    <xsd:documentation>Final date of validity. The right is valid indefinitely if NULL. Valid until midnight of the day specified.</xsd:documentation>
+                                  </xsd:annotation>
+                                </xsd:element>
+                                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedByPkgVersion" type="xsd:integer">
+                                  <xsd:annotation>
+                                    <xsd:documentation>označení, jakou verzí package bylo DR založeno.
+Hodnota mensi rovno 2 jsou historická data, 3 vzniklo comarem, 4 nový</xsd:documentation>
+                                  </xsd:annotation>
+                                </xsd:element>
+                                <xsd:element maxOccurs="1" minOccurs="0" name="HistDr" type="xsd:boolean">
+                                  <xsd:annotation>
+                                    <xsd:documentation>Flag, zda-li se jedná o historicky vzniklé dispoziční oprávnění, nebo nikoliv. Vyhodnocuje se dle CREATED_BY_PKG_VERSION. Do verze 2 včetně plněno 0. Jinak 1.</xsd:documentation>
+                                  </xsd:annotation>
+                                </xsd:element>
+                                <xsd:element maxOccurs="1" minOccurs="0" name="AssignedPostOffice" type="xsd:integer">
+                                  <xsd:annotation>
+                                    <xsd:documentation>Kontaktni posta, odkaz do CST 379.</xsd:documentation>
+                                  </xsd:annotation>
+                                </xsd:element>
+                                <xsd:element maxOccurs="1" minOccurs="0" name="RightProductList">
+                                  <xsd:annotation>
+                                    <xsd:documentation>Seznam produktu
+---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1/Data/RESULTSET/RESULT/CMD_RIGHT_LIST/CMD_RIGHT/RIGHT_PRODUCT_LIST
+Element complex type: {http://xmlns.kbc.com/CLD/SERVICES_THCI/GetDrListByProductNoRes_v1}Local complex type</xsd:documentation>
+                                  </xsd:annotation>
+                                  <xsd:complexType>
+                                    <xsd:sequence>
+                                      <xsd:element maxOccurs="unbounded" minOccurs="1" name="RightProduct">
+                                        <xsd:annotation>
+                                          <xsd:documentation>---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1/Data/RESULTSET/RESULT/CMD_RIGHT_LIST/CMD_RIGHT/RIGHT_PRODUCT_LIST/PRODUCT
+Element complex type: {http://xmlns.kbc.com/CLD/SERVICES_THCI/GetDrListByProductNoRes_v1}Local complex type</xsd:documentation>
+                                        </xsd:annotation>
+                                        <xsd:complexType>
+                                          <xsd:sequence>
+                                            <xsd:element name="IdCmdProductPk" type="xsd:integer">
+                                              <xsd:annotation>
+                                                <xsd:documentation>ID produktu pouzite popr.  v limitech</xsd:documentation>
+                                              </xsd:annotation>
+                                            </xsd:element>
+                                            <xsd:element name="ProductNumber">
+                                              <xsd:annotation>
+                                                <xsd:documentation>Cislo uctu</xsd:documentation>
+                                              </xsd:annotation>
+                                              <xsd:simpleType>
+                                                <xsd:restriction base="xsd:string">
+                                                  <xsd:maxLength value="20"/>
+                                                </xsd:restriction>
+                                              </xsd:simpleType>
+                                            </xsd:element>
+                                            <xsd:element name="ProductNumberBusiness">
+                                              <xsd:annotation>
+                                                <xsd:documentation>Pokud je homecurrency shodna s product currency
+a existuje ABO účet, pak v tomto element se pošle  PRODUCT_NUMBER_PREFIX_ABO-PRODUCT_NUMBER_ABO,
+jinak se posílá PRODUCT_NUMBER</xsd:documentation>
+                                              </xsd:annotation>
+                                              <xsd:simpleType>
+                                                <xsd:restriction base="xsd:string">
+                                                  <xsd:maxLength value="20"/>
+                                                </xsd:restriction>
+                                              </xsd:simpleType>
+                                            </xsd:element>
+                                            <xsd:element maxOccurs="1" minOccurs="0" name="BankSystem" type="xsd:integer">
+                                              <xsd:annotation>
+                                                <xsd:documentation>CST#113
+---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1/Data/RESULTSET/RESULT/CMD_RIGHT_LIST/CMD_RIGHT/RIGHT_PRODUCT_LIST/PRODUCT/BANK_SYSTEM
+Element simple type: {http://xmlns.kbc.com/CLD/CMDB/CMD_CLIENT_INSTANCE_V1}BANK_SYSTEM</xsd:documentation>
+                                              </xsd:annotation>
+                                            </xsd:element>
+                                            <xsd:element maxOccurs="1" minOccurs="0" name="ProductType">
+                                              <xsd:annotation>
+                                                <xsd:documentation>CST#255
+---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1/Data/RESULTSET/RESULT/CMD_RIGHT_LIST/CMD_RIGHT/RIGHT_PRODUCT_LIST/PRODUCT/PRODUCT_TYPE
+Element simple type: {http://xmlns.kbc.com/CLD/CMDB/CMD_PRODUCT_V1}TYPE_OF_PRODUCT</xsd:documentation>
+                                              </xsd:annotation>
+                                              <xsd:simpleType>
+                                                <xsd:restriction base="xsd:integer">
+                                                  <xsd:totalDigits value="38"/>
+                                                </xsd:restriction>
+                                              </xsd:simpleType>
+                                            </xsd:element>
+                                            <xsd:element minOccurs="0" name="AdditionalInfo" type="ns1:ForwardCompatibilityPlaceholderType">
+                                              <xsd:annotation>
+                                                <xsd:documentation>forward compatibility placeholder</xsd:documentation>
+                                              </xsd:annotation>
+                                            </xsd:element>
+                                          </xsd:sequence>
+                                        </xsd:complexType>
+                                      </xsd:element>
+                                    </xsd:sequence>
+                                  </xsd:complexType>
+                                </xsd:element>
+                                <xsd:element maxOccurs="1" minOccurs="0" name="DisponentList">
+                                  <xsd:annotation>
+                                    <xsd:documentation>Seznam disponentu
+---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1/Data/RESULTSET/RESULT/CMD_RIGHT_LIST/CMD_RIGHT/DISPONENT_LIST
+Element complex type: {http://xmlns.kbc.com/CLD/SERVICES_THCI/GetDrListByProductNoRes_v1}Local complex type</xsd:documentation>
+                                  </xsd:annotation>
+                                  <xsd:complexType>
+                                    <xsd:sequence>
+                                      <xsd:element maxOccurs="unbounded" minOccurs="1" name="Disponent">
+                                        <xsd:annotation>
+                                          <xsd:documentation>---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1/Data/RESULTSET/RESULT/CMD_RIGHT_LIST/CMD_RIGHT/DISPONENT_LIST/DISPONENT
+Element complex type: {http://xmlns.kbc.com/CLD/SERVICES_THCI/GetDrListByProductNoRes_v1}Local complex type</xsd:documentation>
+                                        </xsd:annotation>
+                                        <xsd:complexType>
+                                          <xsd:sequence>
+                                            <xsd:element name="IdCmdPartyPk" type="xsd:integer">
+                                              <xsd:annotation>
+                                                <xsd:documentation>ID disponenta pouzite v limit list nize</xsd:documentation>
+                                              </xsd:annotation>
+                                            </xsd:element>
+                                            <xsd:element name="Name">
+                                              <xsd:annotation>
+                                                <xsd:documentation>---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1/Data/RESULTSET/RESULT/CMD_RIGHT_LIST/CMD_RIGHT/DISPONENT_LIST/DISPONENT/NAME
+Element simple type: {http://xmlns.kbc.com/CLD/CMDB/CMD_PERSON_V1}NAME</xsd:documentation>
+                                              </xsd:annotation>
+                                              <xsd:simpleType>
+                                                <xsd:restriction base="xsd:string">
+                                                  <xsd:maxLength value="40"/>
+                                                </xsd:restriction>
+                                              </xsd:simpleType>
+                                            </xsd:element>
+                                            <xsd:element name="Surname">
+                                              <xsd:annotation>
+                                                <xsd:documentation>---
+Backend: CMDB
+Element path: /GetDrListByProductNoRes_v1/Data/RESULTSET/RESULT/CMD_RIGHT_LIST/CMD_RIGHT/DISPONENT_LIST/DISPONENT/SURNAME
+Element simple type: {http://xmlns.kbc.com/CLD/CMDB/CMD_PERSON_V1}SURNAME</xsd:documentation>
+                                              </xsd:annotation>
+                                              <xsd:simpleType>
+                                                <xsd:restriction base="xsd:string">
+                                                  <xsd:maxLength value="40"/>
+                                                </xsd:restriction>
+                                              </xsd:simpleType>
+                                            </xsd:element>
+                                            <xsd:element maxOccurs="1" minOccurs="0" name="TitleBefore">
+                                              <xsd:annotation>
+                                                <xsd:documentation>Title before name, FK (CST_CMDB.CST_0027_UQ.DATAID)</xsd:documentation>
+                                              </xsd:annotation>
+                                              <xsd:simpleType>
+                                                <xsd:restriction base="xsd:integer">
+                                                  <xsd:totalDigits value="38"/>
+                                                </xsd:restriction>
+                                              </xsd:simpleType>
+                                            </xsd:element>
+                                            <xsd:element maxOccurs="1" minOccurs="0" name="TitleBehind">
+                                              <xsd:annotation>
+                                                <xsd:documentation>Title behind name, FK (CST_CMDB.CST_0027_UQ.DATAID)</xsd:documentation>
+                                              </xsd:annotation>
+                                              <xsd:simpleType>
+                                                <xsd:restriction base="xsd:integer">
+                                                  <xsd:totalDigits value="38"/>
+                                                </xsd:restriction>
+                                              </xsd:simpleType>
+                                            </xsd:element>
+                                            <xsd:element name="ValidAfterDeath" type="xsd:boolean">
+                                              <xsd:annotation>
+                                                <xsd:documentation>Hodnota DR_DISPONENT.VALID_AFTER_DEATH přeložená na boolean hodnoty. Plněno 0/1. Vyznam - je DR platne i po smrti vlastnika?</xsd:documentation>
+                                              </xsd:annotation>
+                                            </xsd:element>
+                                            <xsd:element minOccurs="0" name="AdditionalInfo" type="ns1:ForwardCompatibilityPlaceholderType">
+                                              <xsd:annotation>
+                                                <xsd:documentation>forward compatibility placeholder</xsd:documentation>
+                                              </xsd:annotation>
+                                            </xsd:element>
+                                          </xsd:sequence>
+                                        </xsd:complexType>
+                                      </xsd:element>
+                                    </xsd:sequence>
+                                  </xsd:complexType>
+                                </xsd:element>
+                                <xsd:element minOccurs="0" name="LimitList">
+                                  <xsd:annotation>
+                                    <xsd:documentation>Seznam limitaci</xsd:documentation>
+                                  </xsd:annotation>
+                                  <xsd:complexType>
+                                    <xsd:sequence>
+                                      <xsd:element maxOccurs="unbounded" name="Limit">
+                                        <xsd:complexType>
+                                          <xsd:sequence>
+                                            <xsd:element name="IdCmdLimitation" type="xsd:integer">
+                                              <xsd:annotation>
+                                                <xsd:documentation>PK of record in database</xsd:documentation>
+                                              </xsd:annotation>
+                                            </xsd:element>
+                                            <xsd:element minOccurs="0" name="TransactionLimit" nillable="false" type="xsd:decimal">
+                                              <xsd:annotation>
+                                                <xsd:documentation>Transaction amount. There is no transaction limit if equals to zero (=0.0).</xsd:documentation>
+                                              </xsd:annotation>
+                                            </xsd:element>
+                                            <xsd:element minOccurs="0" name="LimitCurrency" type="xsd:integer">
+                                              <xsd:annotation>
+                                                <xsd:documentation>If LIMITATION_TYPE in (LIMITATION_NUMBER_OF_PERSONS, LIMITATION_SPECIFIC_PERSONS) it must be NOT NULL., FK (CST_CMDB.CST_0003_UQ.DATAID)</xsd:documentation>
+                                              </xsd:annotation>
+                                            </xsd:element>
+                                            <xsd:element minOccurs="0" name="DisponentList">
+                                              <xsd:complexType>
+                                                <xsd:sequence>
+                                                  <xsd:element maxOccurs="unbounded" name="Disponent">
+                                                    <xsd:complexType>
+                                                      <xsd:sequence>
+                                                        <xsd:element name="IdCmdPartyPk" type="xsd:integer"/>
+                                                        <xsd:element minOccurs="0" name="AdditionalInfo" type="ns1:ForwardCompatibilityPlaceholderType">
+                                                          <xsd:annotation>
+                                                            <xsd:documentation>forward compatibility placeholder</xsd:documentation>
+                                                          </xsd:annotation>
+                                                        </xsd:element>
+                                                      </xsd:sequence>
+                                                    </xsd:complexType>
+                                                  </xsd:element>
+                                                </xsd:sequence>
+                                              </xsd:complexType>
+                                            </xsd:element>
+                                            <xsd:element minOccurs="0" name="ProductList">
+                                              <xsd:complexType>
+                                                <xsd:sequence>
+                                                  <xsd:element maxOccurs="unbounded" name="Product">
+                                                    <xsd:complexType>
+                                                      <xsd:sequence>
+                                                        <xsd:element name="IdCmdProductPk" type="xsd:integer"/>
+                                                        <xsd:element minOccurs="0" name="AdditionalInfo" type="ns1:ForwardCompatibilityPlaceholderType">
+                                                          <xsd:annotation>
+                                                            <xsd:documentation>forward compatibility placeholder</xsd:documentation>
+                                                          </xsd:annotation>
+                                                        </xsd:element>
+                                                      </xsd:sequence>
+                                                    </xsd:complexType>
+                                                  </xsd:element>
+                                                </xsd:sequence>
+                                              </xsd:complexType>
+                                            </xsd:element>
+                                            <xsd:element minOccurs="0" name="AdditionalInfo" type="ns1:ForwardCompatibilityPlaceholderType">
+                                              <xsd:annotation>
+                                                <xsd:documentation>forward compatibility placeholder</xsd:documentation>
+                                              </xsd:annotation>
+                                            </xsd:element>
+                                          </xsd:sequence>
+                                        </xsd:complexType>
+                                      </xsd:element>
+                                    </xsd:sequence>
+                                  </xsd:complexType>
+                                </xsd:element>
+                                <xsd:element minOccurs="0" name="AdditionalInfo" type="ns1:ForwardCompatibilityPlaceholderType">
+                                  <xsd:annotation>
+                                    <xsd:documentation>forward compatibility placeholder</xsd:documentation>
+                                  </xsd:annotation>
+                                </xsd:element>
+                              </xsd:sequence>
+                            </xsd:complexType>
+                          </xsd:element>
+                        </xsd:sequence>
+                      </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="MultipleAccounts" type="xsd:boolean">
+                      <xsd:annotation>
+                        <xsd:documentation>Hodnota znamenající, jestli k produktu na vstupu, bylo nalezeno více produktů v DB. Plněno 0/1.</xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="Cuid">
+                      <xsd:annotation>
+                        <xsd:documentation>Cuid vlastnika, nevime proc je nepovinne...</xsd:documentation>
+                      </xsd:annotation>
+                      <xsd:simpleType>
+                        <xsd:restriction base="xsd:integer">
+                          <xsd:totalDigits value="38"/>
+                        </xsd:restriction>
+                      </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="OwnerSignBarcode">
+                      <xsd:annotation>
+                        <xsd:documentation>Barcode, ale ceho? dokumentu s opravnenim??</xsd:documentation>
+                      </xsd:annotation>
+                      <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                          <xsd:maxLength value="12"/>
+                        </xsd:restriction>
+                      </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" name="AdditionalInfo" type="ns1:ForwardCompatibilityPlaceholderType">
+                      <xsd:annotation>
+                        <xsd:documentation>forward compatibility placeholder</xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

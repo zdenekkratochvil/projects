@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" name="DispositionalRights" targetNamespace="http://www.csob.cz/distribution/DispositionalRights" xmlns:GetDrListByProduct_v1="http://www.csob.cz/distribution/DispositionalRights/getDrListByProduct/v1" xmlns:meta="http://ed6.kbc.com/metaheader.1" xmlns:ns0="http://services.csob.cz/base_v1" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.csob.cz/distribution/DispositionalRights" xmlns:wmqservice="http://www.ibm.com/xmlns/prod/wmq/bindings/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <types>
+    <xsd:schema targetNamespace="http://www.csob.cz/distribution/DispositionalRights">
+      <xsd:import namespace="http://www.csob.cz/distribution/DispositionalRights/getDrListByProduct/v1" schemaLocation="GetDrListByProductReq.v1.xsd"/>
+      <xsd:import namespace="http://www.csob.cz/distribution/DispositionalRights/getDrListByProduct/v1" schemaLocation="GetDrListByProductRes.v1.xsd"/>
+      <xsd:import namespace="http://ed6.kbc.com/metaheader.1" schemaLocation="ESB_MetaHeader.xsd"/>
+      <xsd:import namespace="http://services.csob.cz/base_v1" schemaLocation="GeneralFault_v1.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="GetDrListByProductReq_v1">
+    <part element="GetDrListByProduct_v1:GetDrListByProductReq" name="GetDrListByProductReq_v1"/>
+  </message>
+  <message name="GetDrListByProductRes_v1">
+    <part element="GetDrListByProduct_v1:GetDrListByProductRes" name="GetDrListByProductRes_v1"/>
+  </message>
+  <message name="MetaHeader_v1">
+    <part element="meta:MetaHeader" name="MetaHeader_v1"/>
+  </message>
+  <message name="GeneralFault_v1">
+    <part element="ns0:GeneralFault" name="GeneralFault_v1"/>
+  </message>
+  <portType name="GetDrListByProduct_v1PortType">
+    <operation name="GetDrListByProduct_v1">
+      <input message="tns:GetDrListByProductReq_v1" name="GetDrListByProductReq_v1"/>
+      <output message="tns:GetDrListByProductRes_v1" name="GetDrListByProductRes_v1"/>
+      <fault message="tns:GeneralFault_v1" name="GeneralFault_v1"/>
+    </operation>
+  </portType>
+  <binding name="GetDrListByProduct_v1PortTypeBindingHttp" type="tns:GetDrListByProduct_v1PortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="GetDrListByProduct_v1">
+      <soap:operation soapAction="http://www.csob.cz/distribution/DispositionalRights/getDrListByProduct/v1" style="document"/>
+      <input name="GetDrListByProductReq_v1">
+        <soap:header message="tns:MetaHeader_v1" part="MetaHeader_v1" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output name="GetDrListByProductRes_v1">
+        <soap:body use="literal"/>
+      </output>
+      <fault name="GeneralFault_v1">
+        <soap:fault name="GeneralFault_v1" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <binding name="GetDrListByProduct_v1PortTypeBindingMQ" type="tns:GetDrListByProduct_v1PortType">
+    <soap:binding style="document" transport="http://www.ibm.com/xmlns/prod/wmq/transport"/>
+    <wmqservice:format>MQSOAP11</wmqservice:format>
+    <wmqservice:persistence>MQPER_NOT_PERSISTENT</wmqservice:persistence>
+    <operation name="GetDrListByProduct_v1">
+      <soap:operation style="document" wmqservice:soapAction="http://www.csob.cz/distribution/DispositionalRights/getDrListByProduct/v1"/>
+      <input name="GetDrListByProductReq_v1">
+        <soap:header message="tns:MetaHeader_v1" part="MetaHeader_v1" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output name="GetDrListByProductRes_v1">
+        <soap:body use="literal"/>
+      </output>
+      <fault name="GeneralFault_v1">
+        <soap:fault name="GeneralFault_v1" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="DispositionalRights">
+    <port binding="tns:GetDrListByProduct_v1PortTypeBindingHttp" name="GetDrListByProduct_v1PortTypeBindingHttpPort">
+      <soap:address location="https://:/services/distribution/DispositionalRights/getDrListByProduct/v1"/>
+    </port>
+    <port binding="tns:GetDrListByProduct_v1PortTypeBindingMQ" name="GetDrListByProduct_v1PortTypeBindingMQPort">
+      <soap:address location="https://:/msg/queue/?transportType=TCP&amp;channelName=SCC_CHANNEL"/>
+      <wmqservice:replyTo>msg/queue/QnameReply</wmqservice:replyTo>
+    </port>
+  </service>
+</definitions>

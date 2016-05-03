@@ -57,6 +57,19 @@
 			<version>8.5.0</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>com.ibm.ws.runtime</groupId>
+			<artifactId>wasruntime</artifactId>
+			<version>8.5.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.ws.security</groupId>
+			<artifactId>wss4j</artifactId>
+			<version>1.6.18</version>
+		</dependency>
 		
 	</dependencies>
 

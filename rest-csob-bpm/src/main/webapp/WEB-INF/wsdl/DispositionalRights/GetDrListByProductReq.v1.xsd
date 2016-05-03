@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.csob.cz/distribution/DispositionalRights/getDrListByProduct/v1" xmlns:tns="http://www.csob.cz/distribution/DispositionalRights/getDrListByProduct/v1">
+  <xsd:annotation>
+    <xsd:documentation>Purchase order schema for Example.com.
+Copyright 2000 Example.com. All rights reserved.</xsd:documentation>
+  </xsd:annotation>
+  <xsd:element name="GetDrListByProductReq">
+    <xsd:annotation>
+      <xsd:documentation>Vrátí seznam dispozičních oprávnění pro daný účet.
+---
+Backend: CMDB
+Element path: /GetDrListByProductNoReq_v1
+Element complex type: {http://xmlns.kbc.com/CLD/SERVICES_THCI/GetDrListByProductNoReq_v1}Local complex type</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="ProductFilterList">
+          <xsd:annotation>
+            <xsd:documentation/>
+          </xsd:annotation>
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element maxOccurs="unbounded" minOccurs="1" name="ProductFilter">
+                <xsd:annotation>
+                  <xsd:documentation/>
+                </xsd:annotation>
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="SequenceNumber" type="xsd:integer">
+                      <xsd:annotation>
+                        <xsd:documentation>Pro parovani request/response
+---
+Backend: CMDB
+Element path: /GetDrListByProductNoReq_v1/Data/REQUESTSET/REQUEST/SEQUENCE_NUMBER
+Element simple type: {http://xmlns.kbc.com/CLD/COMMON_V1}CT_NUMBER</xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ProductNumber">
+                      <xsd:annotation>
+                        <xsd:documentation>napr. cislo bezneho uctu</xsd:documentation>
+                      </xsd:annotation>
+                      <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                          <xsd:maxLength value="20"/>
+                        </xsd:restriction>
+                      </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="HomeCurrency" type="xsd:integer">
+                      <xsd:annotation>
+                        <xsd:documentation>Currency of the product,.Default 181 = code for transactions,  where unused currency. NOT NULL, FK (CST_CMDB.CST_0003_UQ.DATAID)</xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="BankSystem" type="xsd:integer">
+                      <xsd:annotation>
+                        <xsd:documentation>CST113, kde je produkt veden</xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="ProductPrefix">
+                      <xsd:annotation>
+                        <xsd:documentation>CMD Prefix aliasu cisla produktu</xsd:documentation>
+                      </xsd:annotation>
+                      <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                          <xsd:maxLength value="6"/>
+                        </xsd:restriction>
+                      </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="History" type="xsd:boolean">
+                      <xsd:annotation>
+                        <xsd:documentation>0 nebo prazdne = vraci se platne zaznamy. 1 = vrati se i zneplatnene popr. zaznamy platne v budoucnosti.</xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="RightTypeList">
+                      <xsd:annotation>
+                        <xsd:documentation>Typy požadovaných dispozičních oprávnění (papirova, elektronicka atp.)</xsd:documentation>
+                      </xsd:annotation>
+                      <xsd:complexType>
+                        <xsd:sequence>
+                          <xsd:element maxOccurs="10" name="RightType" type="xsd:integer">
+                            <xsd:annotation>
+                              <xsd:documentation>Typ dispozicniho opravneni (SEK), FK (CST_CMDB.CST_0810_UQ.DATAID)</xsd:documentation>
+                            </xsd:annotation>
+                          </xsd:element>
+                        </xsd:sequence>
+                      </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" name="LimitFlag" type="xsd:boolean">
+                      <xsd:annotation>
+                        <xsd:documentation>Flag, zda-li je požadováno v response vrátit informace o limitách DR. Plněno 0/1.</xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

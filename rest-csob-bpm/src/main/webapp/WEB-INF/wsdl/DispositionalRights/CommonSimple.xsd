@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="UTF-8"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.csob.cz/common/core" xmlns:tns="http://www.csob.cz/common/core">
+  <xs:simpleType name="CSTDataID10Type">
+    <xs:annotation>
+      <xs:documentation>CST DataID type</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:nonNegativeInteger">
+      <xs:totalDigits value="10"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="CSTDataIDType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - use CSTDataID10Type; CST DataID type;</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:nonNegativeInteger">
+      <xs:totalDigits value="32"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="EntityIdType">
+    <xs:annotation>
+      <xs:documentation>Entity Id</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:nonNegativeInteger">
+      <xs:totalDigits value="38"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="CSTCodeType">
+    <xs:annotation>
+      <xs:documentation>CST Code type</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="128"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="CSTCode10Type">
+    <xs:annotation>
+      <xs:documentation>CST Code 10 type</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="10"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Timestamp" type="tns:TimestampType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="TimestampType">
+    <xs:annotation>
+      <xs:documentation>Timestamp</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:dateTime"/>
+  </xs:simpleType>
+  <xs:element name="Date" type="tns:DateType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="DateType">
+    <xs:annotation>
+      <xs:documentation>Date</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:date"/>
+  </xs:simpleType>
+  <xs:element name="PageNumber" type="tns:PageNumberType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="PageNumberType">
+    <xs:annotation>
+      <xs:documentation>Page number</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:nonNegativeInteger"/>
+  </xs:simpleType>
+  <xs:element name="RowsPerPage" type="tns:RowsPerPageType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="RowsPerPageType">
+    <xs:annotation>
+      <xs:documentation>Rows per page</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:nonNegativeInteger"/>
+  </xs:simpleType>
+  <xs:element default="1" name="ResultSetMax" nillable="false" type="tns:ResultSetMaxType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="ResultSetMaxType">
+    <xs:annotation>
+      <xs:documentation>Maximal resultset 1..N</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:nonNegativeInteger"/>
+  </xs:simpleType>
+  <xs:element default="1" name="CurrentCount" nillable="false" type="tns:CurrentCountType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="CurrentCountType">
+    <xs:annotation>
+      <xs:documentation>Count of currently returned data</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:nonNegativeInteger"/>
+  </xs:simpleType>
+  <xs:element default="1" name="ResultSetCount" nillable="false" type="tns:ResultSetCountType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="ResultSetCountType">
+    <xs:annotation>
+      <xs:documentation>Overall ResultSet size</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:nonNegativeInteger"/>
+  </xs:simpleType>
+  <xs:element name="RowNumber" type="tns:RowNumberType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="RowNumberType">
+    <xs:annotation>
+      <xs:documentation>Overall ResultSet size</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:nonNegativeInteger"/>
+  </xs:simpleType>
+  <xs:element name="Operator" type="tns:OperatorType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="OperatorType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - User ID, who performs the action. FK (CST_CMDB.CST_0335_UQ.DATAID)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="OperatorId" type="tns:OperatorIdType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="OperatorIdType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - User ID, who performs the action. FK (CST_CMDB.CST_0335_UQ.DATAID)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="OperatorCid" type="tns:OperatorCidType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="OperatorCidType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - use CSTDataID10Type directly. User ID, who performs the action. FK (CST_CMDB.CST_0335_UQ.DATAID)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="BankSystem" type="tns:BankSystemType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="BankSystemType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - Bank System - CST 113 DataID</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="BankSystemCid" type="tns:BankSystemCidType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="BankSystemCidType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - use CSTDataID10Type directly. Bank System - CST 113 DataID</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="BankSystemINFSYST" type="tns:BankSystemINFSYSTType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="BankSystemINFSYSTType">
+    <xs:annotation>
+      <xs:documentation>Bank System - CST 113 INFSYST</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTCode10Type"/>
+  </xs:simpleType>
+  <xs:element name="OrgUnitId" type="tns:OrgUnitIdType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="OrgUnitIdType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - Organizational unit. (CST_CMDB.CST_0336_UQ.DATAID)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="OrgUnitCid" type="tns:OrgUnitCidType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements. Organizational unit which created/modified row. FK (CST_CMDB.CST_0336_UQ.DATAID)</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="OrgUnitCidType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - use CSTDataID10Type directly. Organizational unit. (CST_CMDB.CST_0336_UQ.DATAID)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="Brand" type="tns:BrandType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="BrandType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - Whose is product (on business). (CST_CMDB.CST_0229_UQ.DATAID)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="BrandId" type="tns:BrandIdType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="BrandIdType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - Brand identifier. CST_0229.DATAID</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="BrandCid" type="tns:BrandCidType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="BrandCidType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - use CSTDataID10Type directly. Brand identifier. CST_0229.DATAID</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="Language" type="tns:LanguageType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="LanguageType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - Language identification - DATA_ID from CST0004</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="LanguageId" type="tns:LanguageIdType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="LanguageIdType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - Language identification - CST_0004.DATAID</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="LanguageCid" type="tns:LanguageCidType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="LanguageCidType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - use CSTDataID10Type directly. Language identification - CST_0004.DATAID</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="Boolean" type="tns:BooleanType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="BooleanType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED, NOT ESB ALIGNED. Used to be Thub Boolean data type</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:boolean">
+      <!--<xs:pattern value="0|1"/>-->
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Boolean01Type">
+    <xs:annotation>
+      <xs:documentation>Thub Boolean 0/1 data type</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="0"/>
+      <xs:enumeration value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Boolean12Type">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - Boolean CST52 (1|2) data type</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="1"/>
+      <xs:enumeration value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="TextData" type="tns:TextDataType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="TextDataType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - use xsd string directly. Thub String data type</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="ValidateOnly" type="tns:ValidateOnlyType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="ValidateOnlyType">
+    <xs:annotation>
+      <xs:documentation>1 - validation only, no write; 0 - write</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:BooleanType"/>
+  </xs:simpleType>
+  <xs:element name="ValidateOnlyFlag" type="tns:ValidateOnlyFlagType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="ValidateOnlyFlagType">
+    <xs:annotation>
+      <xs:documentation>1 - validation only, no write; 0 - write</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:Boolean01Type"/>
+  </xs:simpleType>
+  <xs:element name="ExpectedResultSetCount" type="tns:ExpectedResultSetCountType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="ExpectedResultSetCountType">
+    <xs:annotation>
+      <xs:documentation>Maximal expected count of elements.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:long"/>
+  </xs:simpleType>
+  <xs:element name="ValidFromDate" type="tns:ValidFromDateType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="ValidFromDateType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - use xsd date directly. Valid from</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:date"/>
+  </xs:simpleType>
+  <xs:element name="ValidToDate" type="tns:ValidToDateType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="ValidToDateType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - use xsd date directly. Valid to</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:date"/>
+  </xs:simpleType>
+  <xs:element name="ValidToDateTime" type="tns:ValidToDateTimeType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="ValidToDateTimeType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - use xsd dateTime directly. Valid to (with precision to seconds)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:dateTime"/>
+  </xs:simpleType>
+  <xs:element name="SortAttribute" type="tns:SortAttributeType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="SortAttributeType">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+      <xs:maxLength value="30"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="SortDirection" type="tns:SortDirectionType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="SortDirectionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ASC"/>
+      <xs:enumeration value="DESC"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="MessageFormat" type="tns:MessageFormatType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="MessageFormatType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - use CSTDataID10Type directly. CST0813 DataId</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="ErrorCid" type="tns:ErrorCidType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="ErrorCidType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - use CSTDataID10Type directly. CST 35 S3CHYBY</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="IPAddress" type="tns:IPAddressType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="IPAddressType">
+    <xs:annotation>
+      <xs:documentation/>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="39"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ChannelCid" type="tns:ChannelCidType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="ChannelCidType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - use CSTDataID10Type directly.  channel id (CST2 - 255)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="TemplateCid" type="tns:TemplateCidType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="TemplateCidType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - use CSTDataID10Type directly. Template data id (CST2 - 1266)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="tns:CSTDataID10Type"/>
+  </xs:simpleType>
+  <xs:element name="CallContext" type="tns:CallContextType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="CallContextType">
+    <xs:annotation>
+      <xs:documentation>CST TODO dataId. Call context is used for tracing context of business funcionality call. It contains slash ('/') separated non-empty list of CST 818 ids representing nesting atomic business functionalities in complex ones. Example: 55/78/111 means that business functionality 111 is called from 78 and this one is called from 55.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="SortingIdentifier" type="tns:SortingIdentifierType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="SortingIdentifierType">
+    <xs:annotation>
+      <xs:documentation>EGL sorting identifier: 1 - date (max...) descending (default), 2 - use UC102/120 specification</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="IsModifiable" type="tns:IsModifiableType">
+    <xs:annotation>
+      <xs:documentation>DEPRECATED - more flexible is to import types instead of elements.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="IsModifiableType">
+    <xs:annotation>
+      <xs:documentation>modifiable flag</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="30"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
