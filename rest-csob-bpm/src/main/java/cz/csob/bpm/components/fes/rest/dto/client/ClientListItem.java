@@ -11,14 +11,20 @@ public class ClientListItem {
 	private String cuid;
 
 	private String ippid;
+	
+	private String type;
 
-	private String name;
+	private String firstName;
 
-	private String surname;
+	private String lastName;
+	
+	private String companyName;
 
 	private String title;
 
 	private String birthNumber;
+	
+	private String companyGovIdNumber;
 
 	private Date birthDate;
 
@@ -50,20 +56,36 @@ public class ClientListItem {
 		this.ippid = ippid;
 	}
 
-	public String getName() {
-		return name;
+	public String getType() {
+		return type;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setType(String type) {
+		this.type = type;
 	}
 
-	public String getSurname() {
-		return surname;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setSurname(String surname) {
-		this.surname = surname;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 
 	public String getTitle() {
@@ -82,6 +104,14 @@ public class ClientListItem {
 		this.birthNumber = birthNumber;
 	}
 
+	public String getCompanyGovIdNumber() {
+		return companyGovIdNumber;
+	}
+
+	public void setCompanyGovIdNumber(String companyGovIdNumber) {
+		this.companyGovIdNumber = companyGovIdNumber;
+	}
+
 	public Date getBirthDate() {
 		return birthDate;
 	}
@@ -97,7 +127,7 @@ public class ClientListItem {
 	public void setRiskFlag(boolean riskFlag) {
 		this.riskFlag = riskFlag;
 	}
-
+	
 	public List<Address> getAddresses() {
 		if (addresses == null){
 			addresses = new ArrayList<Address>();
@@ -142,13 +172,17 @@ public class ClientListItem {
 		this.roles = roles;
 	}
 
-	// default methods
 
+	// default methods
 	@Override
 	public String toString() {
-		return "ClientListItem [cuid=" + cuid + ", ippid=" + ippid + ", name=" + name + ", surname=" + surname
-				+ ", title=" + title + ", birthNumber=" + birthNumber + ", birthDate=" + birthDate + ", riskFlag="
-				+ riskFlag + ", addresses=" + addresses + ", accounts=" + accounts + ", emails=" + emails + ", roles="
+		return "ClientListItem [cuid=" + cuid + ", ippid=" + ippid + ", type="
+				+ type + ", firstName=" + firstName + ", lastName=" + lastName
+				+ ", companyName=" + companyName + ", title=" + title
+				+ ", birthNumber=" + birthNumber + ", companyGovIdNumber="
+				+ companyGovIdNumber + ", birthDate=" + birthDate
+				+ ", riskFlag=" + riskFlag + ", addresses=" + addresses
+				+ ", accounts=" + accounts + ", emails=" + emails + ", roles="
 				+ roles + "]";
 	}
 

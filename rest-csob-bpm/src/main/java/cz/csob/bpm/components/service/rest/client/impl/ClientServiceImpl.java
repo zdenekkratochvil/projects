@@ -44,9 +44,9 @@ public class ClientServiceImpl implements ClientService {
 		item0.setBirthNumber("8101020123");
 		item0.setCuid("123456");
 		item0.setIppid("789456");
-		item0.setName("Dežo");
+		item0.setFirstName("Dežo");
 		item0.setRiskFlag(false);
-		item0.setSurname("Demeter");
+		item0.setLastName("Demeter");
 		item0.setTitle("PhDr.");
 		
 		Address address0 = new Address();
@@ -78,9 +78,9 @@ public class ClientServiceImpl implements ClientService {
 		item1.setBirthNumber("7855147654");
 		item1.setCuid("67893");
 		item1.setIppid("122287");
-		item1.setName("Martina");
+		item1.setFirstName("Martina");
 		item1.setRiskFlag(false);
-		item1.setSurname("Nováková");
+		item1.setLastName("Nováková");
 
 		data.setClientList(Arrays.asList(item0, item1));
 
