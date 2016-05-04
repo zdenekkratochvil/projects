@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,7 +20,7 @@ import cz.csob.bpm.components.fes.rest.dto.client.ClientListData;
 import cz.csob.bpm.components.fes.rest.dto.user.UserList;
 import cz.csob.bpm.components.fes.rest.dto.user.UserListItem;
 import cz.csob.bpm.components.service.rest.UriComponentsUtils;
-import cz.csob.bpm.components.service.rest.client.impl.ClientServiceImpl;
+import cz.csob.bpm.components.service.rest.client.ClientService;
 import cz.csob.bpm.components.service.security.ILTPATokenProvider;
 
 @RestController
