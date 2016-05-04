@@ -23,13 +23,13 @@ import com.ibm.cz.csob.thub.THUBCallSequence;
 import com.ibm.cz.csob.thub.THUBServiceHandler;
 
 import cz.csob.bpm.components.fes.rest.dto.client.ClientListData;
+import cz.csob.bpm.components.fes.rest.dto.client.ClientListItem;
 import cz.csob.bpm.components.service.rest.client.ClientService;
 import cz.csob.thub.ws.clients.clientlist.GetClientListReq;
 import cz.csob.thub.ws.clients.clientlist.GetClientListReq.Data.Requestset;
 import cz.csob.thub.ws.clients.clientlist.GetClientListReq.Data.Requestset.Request;
 import cz.csob.thub.ws.clients.clientlist.GetClientListRes;
 import cz.csob.thub.ws.clients.clientlist.GetClientListRes.Data.Resultset.Result;
-import cz.csob.thub.ws.clients.clientlist.GetClientListRes.Data.Resultset.Result.Company;
 import cz.csob.thub.ws.clients.clientlist.GetClientListRes.Data.Resultset.Result.Company.CompanyRow;
 import cz.csob.thub.ws.clients.clientlist.GetClientList_v2HttpProxy;
 import cz.csob.thub.ws.clients.disprights.GetDrListByProductReq;
@@ -73,8 +73,14 @@ public class ClientServiceThub implements ClientService {
 	public ClientListData getDisponentListByAccountNumber(String accountNumber) {
 		log.debug("Entering getDisponentListByAccountNumber with accountNumber = " + accountNumber);
 		
+		if ((accountNumber == null) || ("".equals(accountNumber))) {
+			//throw new CSOBBPMException("AccountNumber is not provided. Please provide account number.");
+		}
+		
 		// TODO should be parameter of the call - can be null
 		String piid = "1587898";
+		
+		ClientListData clientListData = null;
 		
 		// Init proxies - set endpoint and handler
 		GetDrListByProduct_v1HttpProxy drListProxy = setupGetDrListByProduct();
@@ -88,10 +94,11 @@ public class ClientServiceThub implements ClientService {
 		ProductFilter productFilter = new ProductFilter();
 		
 		// TODO should be call parameter 
-		productFilter.setProductNumber("9934715");
+		//productFilter.setProductNumber("9934715");
 		//productFilter.setProductNumber("9946126");
+		productFilter.setProductNumber(accountNumber);
 		
-		// Call constants
+		// GetDrByProductNumber call constants
 		productFilter.setHomeCurrency(BigInteger.valueOf(39));
 		productFilter.setBankSystem(BigInteger.valueOf(2));
 		RightTypeList rightTypeList = new RightTypeList();
@@ -103,40 +110,52 @@ public class ClientServiceThub implements ClientService {
 		try {
 			GetDrListByProductRes dispList = drListProxy.getDrListByProductV1(getDrListByProductReq, drListMetaHeader);
 			BigInteger accountOwnerId = dispList.getResultset().getResult().get(0).getCuid();
-			log.debug("Account owner CUID: " + accountOwnerId.toString());
+			if (accountOwnerId != null) {
+				log.debug("Found account owner CUID: " + accountOwnerId.toString());	
 			
-			cz.csob.thub.ws.clients.clientlist.MetaHeader cliListListMetaHeader = getCliListMetaheader(piid);
-			GetClientListReq getClientListReqV2 = new GetClientListReq();
-			cz.csob.thub.ws.clients.clientlist.GetClientListReq.Data clientListReqData = new cz.csob.thub.ws.clients.clientlist.GetClientListReq.Data();
-			Requestset clientListReqSet = new Requestset();
-			Request clientListReqRequest = new Request();
-			clientListReqRequest.setIdCmdPartyPk(accountOwnerId);
-			clientListReqSet.getRequest().add(clientListReqRequest);			
-			clientListReqData.setRequestset(clientListReqSet);
-			getClientListReqV2.setData(clientListReqData);
-			try {
-				GetClientListRes ownerList = cliListProxy.getClientListV2(getClientListReqV2, cliListListMetaHeader);
-				// Result cliListResult = ownerList.getData().getResultset().getResult().get(0);
-				for (Result cliListResult : ownerList.getData().getResultset().getResult()) {
-					log.debug("Client result: " + cliListResult.getClass());
-					// Person cliListPersonList = (Person) cliListResult.getPerson().getPersonRow();
-					for (CompanyRow row: cliListResult.getCompany().getCompanyRow()) {
-						log.debug("Client person: " + row.getNameOfCompanyLong());
+				clientListData = new ClientListData();
+				ArrayList<ClientListItem> clientList = new ArrayList<ClientListItem>();
+						
+				cz.csob.thub.ws.clients.clientlist.MetaHeader cliListListMetaHeader = getCliListMetaheader(piid);
+				GetClientListReq getClientListReqV2 = new GetClientListReq();
+				cz.csob.thub.ws.clients.clientlist.GetClientListReq.Data clientListReqData = new cz.csob.thub.ws.clients.clientlist.GetClientListReq.Data();
+				Requestset clientListReqSet = new Requestset();
+				Request clientListReqRequest = new Request();
+				clientListReqRequest.setIdCmdPartyPk(accountOwnerId);
+				clientListReqSet.getRequest().add(clientListReqRequest);			
+				clientListReqData.setRequestset(clientListReqSet);
+				getClientListReqV2.setData(clientListReqData);
+				try {
+					GetClientListRes ownerList = cliListProxy.getClientListV2(getClientListReqV2, cliListListMetaHeader);
+					// Result cliListResult = ownerList.getData().getResultset().getResult().get(0);
+					for (Result cliListResult : ownerList.getData().getResultset().getResult()) {
+						log.debug("Account owner found: " + cliListResult.getClass());
+						// Person cliListPersonList = (Person) cliListResult.getPerson().getPersonRow();
+						for (CompanyRow companyRow: cliListResult.getCompany().getCompanyRow()) {
+							log.debug("Client person: " + companyRow.getNameOfCompanyLong());
+							ClientListItem clientListItem = new ClientListItem();
+							clientListItem.setCuid(companyRow.getIdCmdPartyPk().toString());
+							clientListItem.setName(companyRow.getNameOfCompanyLong());
+							clientListItem.setBirthNumber(companyRow.getFictIdNumber());
+							clientList.add(clientListItem);
+						}
 					}
+					clientListData.setClientList(clientList);
+					//log.debug("Account owner info: " + ownerList.getData().getResultset().getResult().get(0).getPerson().getPersonRow().get(0).getFictBirthNumber());
+				} catch (cz.csob.thub.ws.clients.clientlist.GeneralFaultV1 clfe) {
+					log.error("THUB Service GetClientList_v2 failed for CUID: ", clfe);			
 				}
-				
-				//log.debug("Account owner info: " + ownerList.getData().getResultset().getResult().get(0).getPerson().getPersonRow().get(0).getFictBirthNumber());
-			} catch (cz.csob.thub.ws.clients.clientlist.GeneralFaultV1 clfe) {
-				log.error("THUB Service GetClientList_v2 failed for CUID: ", clfe);			}
+				RightList rightList = (RightList) dispList.getResultset().getResult().get(0).getRightList();
+				log.debug("Found right: " + rightList.getRight().get(0).getIdCmdRight());
+			}
 			
-			RightList rightList = (RightList) dispList.getResultset().getResult().get(0).getRightList();
-			log.debug("Found right: " + rightList.getRight().get(0).getIdCmdRight());
+			
 			
 		} catch (cz.csob.thub.ws.clients.disprights.GeneralFaultV1 drlfe) {
 			log.error("THUB Service GetDrListByProduct failed ", drlfe);
 		}
 		
-		return null;
+		return clientListData;
 	}
 
 	private GetDrListByProduct_v1HttpProxy setupGetDrListByProduct() {
