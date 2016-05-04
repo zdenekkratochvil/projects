@@ -78,7 +78,8 @@ public class ClientServiceThub implements ClientService {
 		}
 		
 		// TODO should be parameter of the call - can be null
-		String piid = "1587898";
+		//String piid = "1587898";
+		String piid = null;
 		
 		ClientListData clientListData = null;
 		
@@ -184,7 +185,7 @@ public class ClientServiceThub implements ClientService {
 		//https://a-thub-dmsucf.cz.int.intapp.eu:7519/services/distribution/ClientIdentification/getClientList/v2		
 	
 		// TODO Add read from cfg
-		cliListProxy ._getDescriptor().setEndpoint("https://a-thub-dmsucf.cz.int.intapp.eu:7519/services/distribution/ClientIdentification/getClientList/v2");
+		cliListProxy ._getDescriptor().setEndpoint("https://a-thub-dmsbpm.cz.int.intapp.eu:7519/services/distribution/ClientIdentification/getClientList/v2");
 
 		// Add SOAP Handler for T-HUB invocation
 		BindingProvider proxyBindingProvider = (BindingProvider) cliListProxy ._getDescriptor().getProxy();
@@ -273,7 +274,7 @@ public class ClientServiceThub implements ClientService {
 		String _processId = processId;
 		if ((processId == null) || "".equals(processId))
 			// Generate random number when processId is not provided
-			_processId = RandomStringUtils.randomNumeric(10);
+			_processId = RandomStringUtils.randomNumeric(9);
 		
 		String _callId = callId; 				
 		if ((callId == null) || "".equals(callId))
@@ -285,39 +286,42 @@ public class ClientServiceThub implements ClientService {
 		String hostName;
 		try {
 			hostName = InetAddress.getLocalHost().getHostName();
-			System.out.println("Hostname for T-HUB call: " + hostName);
+			log.debug("Hostname for T-HUB call: " + hostName);
 			hostName = hostName.replaceAll("[^a-zA-Z0-9]", "");
 			if (hostName.length() > 10) { 
 				hostName = hostName.substring(0, 10);
-			}
-			System.out.println("Hostname for T-HUB call: " + hostName);
+			}			
 		} catch (UnknownHostException e) {
 			hostName = "notfound";
-			e.printStackTrace();
+			log.warn("T-HUB header has no node info, because host name can't be resolved.", e);
 		}		
 		sessionIdSB.append(hostName);		
 		sessionIdSB.append(_processId);
 		
 		// sessionIdSB.append(RandomStringUtils.randomNumeric(23 - hostName.length() - 8));
 		
-		int currentLenght = sessionIdSB.length();
-		System.out.println("Current leght: " + sessionIdSB.length());
+		int currentLenght = sessionIdSB.length();		
 		int maxLenght = 32;
 		String newCallId = String.valueOf(THUBCallSequence.getInstance().getNewCallId());
-		int requiredPaddLenght = maxLenght - currentLenght - newCallId.length()+1;
-		if (requiredPaddLenght <= 0) {
-			System.err.println("T-HUB sequence lenght exeeded. T-HUB invocation can fail. Restat of application can help - it will reset the sequence.");
+		//int requiredPaddLenght = maxLenght - currentLenght - newCallId.length()+1;
+		int requiredPaddLenght = maxLenght - currentLenght;
+		if (requiredPaddLenght + currentLenght > 32) {
+			log.warn("T-HUB sequence lenght exeeded. T-HUB invocation will fail. Restat of this application can help - it will reset the sequence.");
 			requiredPaddLenght = 0;
 		}
 		
-		//String newCallIdS = padRight(newCallId, requiredPaddLenght);
+		//String newCallIdS = padRight(newCallId, requiredPaddLenght);		
 		String newCallIdS = StringUtils.leftPad(newCallId, requiredPaddLenght, '0');
+
+		if (log.isDebugEnabled()) {
+			log.debug("SessionID construction: currentIdSB: " + sessionIdSB + "(" + currentLenght + "), newCallId: " + newCallId + " newCallIdS: " + newCallIdS + "(" + newCallIdS.length() + ") -> requiredPaddLenght: " + requiredPaddLenght);
+		}			
+
 		sessionIdSB.append(newCallIdS);
-		
-		System.out.println("Current leght: " + sessionIdSB.length() + " CallID: " + newCallId + " time: " + System.currentTimeMillis());
+
 		
 		String sessionId = sessionIdSB.toString();
-		System.out.println("Generated SessionId for T-HUB call: " + sessionId + "(" + sessionId.length() + ")");
+		log.debug("Generated SessionId for T-HUB call: " + sessionId + "(" + sessionId.length() + ")");
 		return sessionId;
 	}
 	
@@ -340,18 +344,12 @@ public class ClientServiceThub implements ClientService {
 			_callId = "SRVR";
 		
 		sessionIdSB.append(_callId);
-		sessionIdSB.append(SYSTEM_ID);
-		
+		sessionIdSB.append(SYSTEM_ID);		
 		sessionIdSB.append(_processId);
 		
-		long newCallId = THUBCallSequence.getInstance().getNewCallId();
-		
-		// sessionIdSB.append(RandomStringUtils.randomNumeric(23 - hostName.length() - 8));
-		 
-		System.out.println("CallID: " + newCallId + " time: " + System.currentTimeMillis());
-		
+		// sessionIdSB.append(RandomStringUtils.randomNumeric(23 - hostName.length() - 8));		 
 		String sessionId = sessionIdSB.toString();
-		System.out.println("Generated SessionId for T-HUB call: " + sessionId);
+		log.debug("Generated Business Session Id for T-HUB call: " + sessionId);
 		return sessionId;
 	}
 }
