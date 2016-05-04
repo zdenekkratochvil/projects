@@ -4,6 +4,7 @@ import java.sql.Array;
 import java.util.Arrays;
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import cz.csob.bpm.components.fes.rest.dto.client.Account;
@@ -14,7 +15,8 @@ import cz.csob.bpm.components.fes.rest.dto.client.Email;
 import cz.csob.bpm.components.fes.rest.dto.client.Role;
 import cz.csob.bpm.components.service.rest.client.ClientService;
 
-@Service
+//@Service
+@Component("MockClientService")
 public class ClientServiceImpl implements ClientService {
 
 	@Override
@@ -61,7 +63,7 @@ public class ClientServiceImpl implements ClientService {
 		account0.setId("0300");
 		account0.setIban("IBAN123456789");
 		
-		item0.getAccounts().add(account0);
+		//item0.getAccounts().add(account0);
 		
 		Email email0 = new Email();
 		email0.setEmail("dedem@email.com");
@@ -71,7 +73,7 @@ public class ClientServiceImpl implements ClientService {
 		Role role0 = new Role();
 		role0.setType((short) 5);
 		
-		item0.getRoles().add(role0);
+		// item0.getRoles().add(role0);
 		
 		ClientListItem item1 = new ClientListItem();
 		item1.setBirthDate(new Date());

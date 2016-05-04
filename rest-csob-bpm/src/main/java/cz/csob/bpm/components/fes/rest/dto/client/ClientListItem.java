@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class ClientListItem {
 
 	// attributes
@@ -26,17 +28,18 @@ public class ClientListItem {
 	
 	private String companyGovIdNumber;
 
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd. MM. yyyy")
 	private Date birthDate;
 
 	private boolean riskFlag;
 
 	private List<Address> addresses;
 
-	private List<Account> accounts;
+	private List<AccountRole> accountRoles;
 
 	private List<Email> emails;
 
-	private List<Role> roles;
+	// private List<Role> roles;
 
 	// getters and setters
 
@@ -139,15 +142,15 @@ public class ClientListItem {
 		this.addresses = addresses;
 	}
 
-	public List<Account> getAccounts() {
-		if (accounts == null){
-			accounts = new ArrayList<Account>();
+	public List<AccountRole> getAccountsRoles() {
+		if (accountRoles == null){
+			accountRoles = new ArrayList<AccountRole>();
 		}
-		return accounts;
+		return accountRoles;
 	}
 
-	public void setAccounts(List<Account> accounts) {
-		this.accounts = accounts;
+	public void setAccountRoles(List<AccountRole> accountRoles) {
+		this.accountRoles = accountRoles;
 	}
 
 	public List<Email> getEmails() {
@@ -161,17 +164,6 @@ public class ClientListItem {
 		this.emails = emails;
 	}
 
-	public List<Role> getRoles() {
-		if (roles == null){
-			roles = new ArrayList<Role>();
-		}
-		return roles;
-	}
-
-	public void setRoles(List<Role> roles) {
-		this.roles = roles;
-	}
-
 
 	// default methods
 	@Override
@@ -182,8 +174,7 @@ public class ClientListItem {
 				+ ", birthNumber=" + birthNumber + ", companyGovIdNumber="
 				+ companyGovIdNumber + ", birthDate=" + birthDate
 				+ ", riskFlag=" + riskFlag + ", addresses=" + addresses
-				+ ", accounts=" + accounts + ", emails=" + emails + ", roles="
-				+ roles + "]";
+				+ ", accountRoles=" + accountRoles + ", emails=" + emails + "]";
 	}
 
 }

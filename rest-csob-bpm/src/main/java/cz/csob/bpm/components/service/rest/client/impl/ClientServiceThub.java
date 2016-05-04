@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Component;
 import com.ibm.cz.csob.thub.THUBCallSequence;
 import com.ibm.cz.csob.thub.THUBServiceHandler;
 
+import cz.csob.bpm.components.fes.rest.dto.client.AccountRole;
+import cz.csob.bpm.components.fes.rest.dto.client.Address;
 import cz.csob.bpm.components.fes.rest.dto.client.ClientListData;
 import cz.csob.bpm.components.fes.rest.dto.client.ClientListItem;
 import cz.csob.bpm.components.service.rest.client.ClientService;
@@ -130,14 +133,14 @@ public class ClientServiceThub implements ClientService {
 					List<Result> drListResult = ownerList.getData().getResultset().getResult();
 					
 					//for (Result cliListResult : ownerList.getData().getResultset().getResult()) {
-					if (drListResult.size() > 0) {		
+					if (!drListResult.isEmpty()) {		
 						Result drResult = drListResult.get(0);
 						log.debug("Account owner found");
 						
 						clientListData = new ClientListData();
 						ArrayList<ClientListItem> clientList = new ArrayList<ClientListItem>();						
 						
-						ClientListItem ownerClientListItem = mapClientToVO(drResult);
+						ClientListItem ownerClientListItem = mapClientToVO(drResult, accountNumber, "owner");
 						if (ownerClientListItem != null) {
 							clientList.add(ownerClientListItem);
 						}	
@@ -156,7 +159,14 @@ public class ClientServiceThub implements ClientService {
 										GetClientListRes dispPersonList = cliListProxy.getClientListV2(getClientListReqV2, cliListListMetaHeader);
 										// Result cliListResult = ownerList.getData().getResultset().getResult().get(0);
 										List<Result> dispListResult = dispPersonList.getData().getResultset().getResult();
-										
+										if (!dispListResult.isEmpty()) {		
+											Result disponentResult = dispListResult.get(0);
+											log.debug("Disponent found");
+											ClientListItem disponentClientListItem = mapClientToVO(disponentResult, accountNumber, "delegate");
+											if (disponentClientListItem != null) {
+												clientList.add(disponentClientListItem);
+											}	
+										}										
 									} catch (cz.csob.thub.ws.clients.clientlist.GeneralFaultV1 clfe) {
 										log.error("THUB Service GetClientList_v2 failed for CUID: ", clfe);			
 									}
@@ -165,16 +175,10 @@ public class ClientServiceThub implements ClientService {
 						}						
 						clientListData.setClientList(clientList);						
 					}
-
 				} catch (cz.csob.thub.ws.clients.clientlist.GeneralFaultV1 clfe) {
 					log.error("THUB Service GetClientList_v2 failed for CUID: ", clfe);			
 				}
-				//RightList rightList = (RightList) dispList.getResultset().getResult().get(0).getRightList();
-				//log.debug("Found right: " + rightList.getRight().get(0).getIdCmdRight());
-			}
-			
-			
-			
+			}			
 		} catch (cz.csob.thub.ws.clients.disprights.GeneralFaultV1 drlfe) {
 			log.error("THUB Service GetDrListByProduct failed ", drlfe);
 		}
@@ -182,27 +186,67 @@ public class ClientServiceThub implements ClientService {
 		return clientListData;
 	}
 
-	private ClientListItem mapClientToVO(Result drResult) {
+	private ClientListItem mapClientToVO(Result drResult, String accountNumber, String roleType) {
 		ClientListItem clientListItem = null;
 		Company companyOwner = drResult.getCompany();
 		Person personOwner = drResult.getPerson();						
 		if (personOwner != null) {
 			PersonRow personRow = personOwner.getPersonRow().get(0); 
-			log.debug("Found Owner type Physical Person " + personOwner.getPersonRow().get(0).getIdCmdPartyPk());
+			log.debug("Found person type Physical Person " + personOwner.getPersonRow().get(0).getIdCmdPartyPk());
 			clientListItem = new ClientListItem();
 			clientListItem.setCuid(personRow.getIdCmdPartyPk().toString());
 			clientListItem.setType("physical");
 			clientListItem.setFirstName(personRow.getName());
 			clientListItem.setLastName(personRow.getSurname());
-			clientListItem.setBirthNumber(personRow.getFictBirthNumber());			
+			clientListItem.setBirthNumber(personRow.getFictBirthNumber());
+			//clientListItem.setBirthDate(personRow.getDateOfBirth());
+			if (personRow.getDateOfBirth() != null) {
+				log.debug("Date of Birth " + personRow.getDateOfBirth().toString() + " - " + personRow.getDateOfBirth().toGregorianCalendar().getTime());
+				Date birthDate = personRow.getDateOfBirth().toGregorianCalendar().getTime();
+				clientListItem.setBirthDate(birthDate);
+			}
+			
+			// Address
+			Address basicAddress = new Address();
+			basicAddress.setStreet(personRow.getStreet());
+			basicAddress.setCity(personRow.getCity());			
+			basicAddress.setPostCode(personRow.getPostalCode());			
+			ArrayList<Address> addressList = new ArrayList<Address>();
+			addressList.add(basicAddress);			
+			clientListItem.setAddresses(addressList);
+			
+			// Account Role
+			ArrayList<AccountRole> accountRoleList = new ArrayList<AccountRole>();
+			AccountRole accountRole = new AccountRole();
+			accountRole.setAccountNumber(accountNumber);
+			accountRole.setRoleType(roleType);
+			accountRoleList.add(accountRole);
+			clientListItem.setAccountRoles(accountRoleList);
 		} else {
 			CompanyRow companyRow = companyOwner.getCompanyRow().get(0);
-			log.debug("Found Owner type Legal Person " + companyOwner.getCompanyRow().get(0).getIdCmdPartyPk());
+			log.debug("Found person type Legal Person " + companyOwner.getCompanyRow().get(0).getIdCmdPartyPk());
 			clientListItem = new ClientListItem();
 			clientListItem.setCuid(companyRow.getIdCmdPartyPk().toString());
 			clientListItem.setType("legal");
 			clientListItem.setCompanyName(companyRow.getNameOfCompanyLong());
-			clientListItem.setCompanyGovIdNumber(companyRow.getFictIdNumber());			
+			clientListItem.setCompanyGovIdNumber(companyRow.getFictIdNumber());
+			
+			// Address processing
+			Address basicAddress = new Address();
+			basicAddress.setStreet(companyRow.getStreet());
+			basicAddress.setCity(companyRow.getCity());			
+			basicAddress.setPostCode(companyRow.getPostalCode());			
+			ArrayList<Address> addressList = new ArrayList<Address>();
+			addressList.add(basicAddress);			
+			clientListItem.setAddresses(addressList);
+			
+			// Account Role
+			ArrayList<AccountRole> accountRoleList = new ArrayList<AccountRole>();
+			AccountRole accountRole = new AccountRole();
+			accountRole.setAccountNumber(accountNumber);
+			accountRole.setRoleType(roleType);
+			accountRoleList.add(accountRole);
+			clientListItem.setAccountRoles(accountRoleList);
 		}
 		return clientListItem;
 	}

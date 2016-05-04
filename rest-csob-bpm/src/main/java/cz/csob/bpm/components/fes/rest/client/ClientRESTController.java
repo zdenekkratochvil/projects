@@ -31,6 +31,7 @@ public class ClientRESTController extends AbstractRESTController {
 	
 	@Autowired 
 	@Qualifier("THUBClientService")
+	//@Qualifier("MockClientService")
 	private ClientService clientService;
 	
 	@Autowired 
