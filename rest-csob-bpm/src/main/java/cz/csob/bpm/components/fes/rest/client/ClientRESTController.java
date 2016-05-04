@@ -5,16 +5,21 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import cz.csob.bpm.components.fes.rest.AbstractRESTController;
+import cz.csob.bpm.components.fes.rest.dto.GetPriorityTaskResponse;
 import cz.csob.bpm.components.fes.rest.dto.client.ClientListData;
-import cz.csob.bpm.components.service.rest.client.ClientService;
+import cz.csob.bpm.components.fes.rest.dto.user.UserList;
+import cz.csob.bpm.components.fes.rest.dto.user.UserListItem;
+import cz.csob.bpm.components.service.rest.UriComponentsUtils;
+import cz.csob.bpm.components.service.rest.client.impl.ClientServiceImpl;
 import cz.csob.bpm.components.service.security.ILTPATokenProvider;
 
 @RestController
@@ -36,6 +41,10 @@ public class ClientRESTController extends AbstractRESTController {
 		LOG.debug("getClientListByCuid - cuid: {}", cuid );
 		LOG.debug("getClientListByCuid - user: {}", tokenProvider.getPrincipalName());
 		ClientListData result = clientService.getClientListByCuid(cuid);
+		
+		// delete
+		getUserIdByUserName(cuid);
+		
 		return result;
 	}
 
@@ -61,6 +70,26 @@ public class ClientRESTController extends AbstractRESTController {
 		LOG.debug("getDisponentListByAccountNumber - user: {}", tokenProvider.getPrincipalName());
 		ClientListData result = clientService.getDisponentListByAccountNumber(accountNumber);
 		return result;
+	}
+	
+	public Long getUserIdByUserName(String username) {
+		UriComponentsBuilder uriBuilder = UriComponentsUtils.createFindUserBuilder(username);
+
+		UserList value = getTemplate().getResult(uriBuilder, HttpMethod.GET, UserList.class);
+
+		GetPriorityTaskResponse resp = new GetPriorityTaskResponse();
+		if (value != null && value.getData() != null && value.getData().getItems() != null
+				&& value.getData().getItems().size() > 0) {
+
+			UserListItem firstItem = value.getData().getItems().get(0);
+
+			LOG.debug("Result User: {}", firstItem.getId());
+			return firstItem.getId();
+
+		} else {
+			LOG.debug("getUserIdByUserName result empty: {}", username);
+			return null;
+		}
 	}
 
 

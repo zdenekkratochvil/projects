@@ -13,6 +13,7 @@ public class UriComponentsUtils {
 	public static final String PARAM_CREATE_TASK = "createTask";
 	public static final String PARAM_ACTION_VALUE = "start";
 	public static final String PARAM_ACTION = "action";
+	public static final String PARAM_USERNAME = "userName";
 	
 	public static final String SIZE = "size";
 	public static final String DUE_PRIORITY = "DUE,PRIORITY";
@@ -29,11 +30,13 @@ public class UriComponentsUtils {
 	
 	public static final String PATH_TASK = "/task";
 	public static final String PATH_USER = "/user/";
+	public static final String PATH_SLASH = "/";
 
 	private static String backendUrl;
+	private static String csobBpmServiceUrl;
 
 	public static UriComponentsBuilder createGetUser(String username) {
-		return UriComponentsBuilder.fromUriString(backendUrl).path(PATH_USER).path(username).queryParam(INCLUDE_INTERNAL_MEMBERSHIPS, false)
+		return UriComponentsBuilder.fromUriString(backendUrl).path(PATH_USER + PATH_SLASH).path(username).queryParam(INCLUDE_INTERNAL_MEMBERSHIPS, false)
 				.queryParam(REFRESH_USER, false).queryParam(PARAM_PARTS, PARAM_PARTS_NONE);
 	}
 
@@ -59,9 +62,17 @@ public class UriComponentsUtils {
 		return UriComponentsBuilder.fromUriString(backendUrl).path(TASKS_QUERY_ENTITY_LIST).queryParam(CALC_STATS, false)
 				.queryParam(INTERACTION_FILTER, ASSESS_AVAILABLE).queryParam(SORT_ATTRIBUTES, DUE_PRIORITY).queryParam(SIZE, size);
 	}
+	
+	public static UriComponentsBuilder createFindUserBuilder(String username) {
+		return UriComponentsBuilder.fromUriString(csobBpmServiceUrl).path(PATH_USER).queryParam(PARAM_USERNAME, username);
+	}
 
 	public void setBackendUrl(String backendUrl) {
 		UriComponentsUtils.backendUrl = backendUrl;
+	}
+	
+	public void setCsobBpmServiceUrl(String csobBpmServiceUrl) {
+		UriComponentsUtils.csobBpmServiceUrl = csobBpmServiceUrl;
 	}
 	
 

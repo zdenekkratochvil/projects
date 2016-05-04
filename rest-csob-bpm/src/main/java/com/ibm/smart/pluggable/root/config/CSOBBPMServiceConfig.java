@@ -21,11 +21,13 @@ import cz.csob.bpm.components.service.rest.UriComponentsUtils;
 public class CSOBBPMServiceConfig {
 
 	@Value("${bpm.url}") private String backendUrl;
+	@Value("${csob.bpm.service.url}") private String csobBpmServiceUrl;
 	
 	@Bean
 	public UriComponentsUtils createUriComponentsUtils() {
 		UriComponentsUtils utils = new UriComponentsUtils();
 		utils.setBackendUrl(backendUrl);
+		utils.setBackendUrl(csobBpmServiceUrl);
 		return utils;
 	}
 	
