@@ -18,6 +18,7 @@ import javax.xml.ws.handler.Handler;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.ibm.cz.csob.thub.THUBCallSequence;
@@ -59,7 +60,14 @@ public class ClientServiceThub implements ClientService {
 	private static final BigInteger COMPANY_ID = BigInteger.valueOf(1);
 	private static final String SYSTEM_ID = "DMBPM";
 	private static final String CALL_ID = "REST";
+	
+	@Value("${csob.thub.ws.drlist.url}")
+	String drListEndpointUrl;
 
+	@Value("${csob.thub.ws.clilist.url}")
+	String cliListEndpointUrl;
+
+	
 	@Override
 	public ClientListData getClientListByCuid(String cuid) {
 		// TODO Auto-generated method stub
@@ -267,8 +275,8 @@ public class ClientServiceThub implements ClientService {
 		GetDrListByProduct_v1HttpProxy drListProxy = new GetDrListByProduct_v1HttpProxy();
 		//https://a-thub-dmsucf.cz.int.intapp.eu:7519/services/distribution/ClientIdentification/getClientList/v2		
 	
-		// TODO Add read from cfg
-		drListProxy._getDescriptor().setEndpoint("https://a-thub-dmsbpm.cz.int.intapp.eu:7519/services/distribution/DispositionalRights/getDrListByProduct/v1");
+		// TODO Add read from cfg		
+		drListProxy._getDescriptor().setEndpoint(drListEndpointUrl);
 		//drListProxy._getDescriptor().setEndpoint("http://W2AB0095:8080/cmdb/getdrlistbyproduct_v1");
 
 		// Add SOAP Handler for T-HUB invocation
@@ -289,7 +297,7 @@ public class ClientServiceThub implements ClientService {
 		//https://a-thub-dmsucf.cz.int.intapp.eu:7519/services/distribution/ClientIdentification/getClientList/v2		
 	
 		// TODO Add read from cfg
-		cliListProxy ._getDescriptor().setEndpoint("https://a-thub-dmsbpm.cz.int.intapp.eu:7519/services/distribution/ClientIdentification/getClientList/v2");
+		cliListProxy ._getDescriptor().setEndpoint(cliListEndpointUrl);
 
 		// Add SOAP Handler for T-HUB invocation
 		BindingProvider proxyBindingProvider = (BindingProvider) cliListProxy ._getDescriptor().getProxy();

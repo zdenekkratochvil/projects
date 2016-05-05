@@ -28,7 +28,7 @@ public class ClientListItem {
 	
 	private String companyGovIdNumber;
 
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd. MM. yyyy")
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
 	private Date birthDate;
 
 	private boolean riskFlag;
