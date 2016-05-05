@@ -66,6 +66,9 @@ public class ClientServiceThub implements ClientService {
 
 	@Value("${csob.thub.ws.clilist.url}")
 	String cliListEndpointUrl;
+	
+	@Value("${bpm.default.thub.userid}")
+	String defaultTHUBUser;
 
 	
 	@Override
@@ -336,7 +339,7 @@ public class ClientServiceThub implements ClientService {
 		origSrc.setCompany(COMPANY_ID);
 		
 		// TODO Add correct mapped User ID
-		origSrc.setUser("0");
+		origSrc.setUser(defaultTHUBUser);
 		metaHeader.setOriginalSource(origSrc);
 
 		return metaHeader;
@@ -367,7 +370,7 @@ public class ClientServiceThub implements ClientService {
 		origSrc.setCompany(COMPANY_ID);
 		
 		// TODO Add correct mapped User ID
-		origSrc.setUser("0");
+		origSrc.setUser(defaultTHUBUser);
 		metaHeader.setOriginalSource(origSrc);
 
 		return metaHeader;
