@@ -7,11 +7,11 @@ public class CSOBBPMException extends Exception {
 	public CSOBBPMException() {
 		super();
 	}
-/*
+
 	public CSOBBPMException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
-*/
+
 	public CSOBBPMException(String message, Throwable cause) {
 		super(message, cause);
 	}

@@ -2,21 +2,27 @@ package cz.csob.bpm.components.fes.rest.client;
 
 import java.io.IOException;
 
+import javax.xml.ws.soap.SOAPFaultException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import cz.csob.bpm.components.fes.rest.AbstractRESTController;
 import cz.csob.bpm.components.fes.rest.dto.GetPriorityTaskResponse;
 import cz.csob.bpm.components.fes.rest.dto.client.ClientListData;
+import cz.csob.bpm.components.fes.rest.dto.client.ErrorInfo;
 import cz.csob.bpm.components.fes.rest.dto.user.UserList;
 import cz.csob.bpm.components.fes.rest.dto.user.UserListItem;
 import cz.csob.bpm.components.service.rest.UriComponentsUtils;
@@ -66,13 +72,26 @@ public class ClientRESTController extends AbstractRESTController {
 		return result;
 	}
 	
-	@RequestMapping(path="getDisponentListByAccountNumber", method = RequestMethod.POST)
-	public @ResponseBody ClientListData getDisponentListByAccountNumber(@RequestParam(required=true) String accountNumber) throws IOException {
+	@RequestMapping(path="getDisponentListByAccountNumber", method = RequestMethod.GET)
+	public @ResponseBody ClientListData getDisponentListByAccountNumber(
+			@RequestParam(required=true) String accountNumber,
+			@RequestParam(required=false, defaultValue="") String processId) throws IOException {
 		LOG.debug("getDisponentListByAccountNumber - accountNumber: {}", accountNumber );
 		LOG.debug("getDisponentListByAccountNumber - user: {}", tokenProvider.getPrincipalName());
-		ClientListData result = clientService.getDisponentListByAccountNumber(accountNumber);
+		ClientListData result = clientService.getDisponentListByAccountNumber(accountNumber, processId);
 		return result;
 	}
+	
+	@ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR, reason="Backend failure") 
+	@ExceptionHandler(value = SOAPFaultException.class)
+	public ErrorInfo handleSoapFault(SOAPFaultException sfe) {
+		LOG.error("My exception handler!!!!!");
+		ErrorInfo errInfo = new ErrorInfo();
+		errInfo.setErrorCode("BACKEND");
+		errInfo.setErrorMessage("Errmsg: " + sfe.getMessage());		
+	    return errInfo; 
+	}
+
 	
 	public Long getUserIdByUserName(String username) {
 		UriComponentsBuilder uriBuilder = UriComponentsUtils.createFindUserBuilder(username);

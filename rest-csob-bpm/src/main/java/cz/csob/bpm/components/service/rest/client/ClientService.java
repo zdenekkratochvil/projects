@@ -1,5 +1,7 @@
 package cz.csob.bpm.components.service.rest.client;
 
+import org.springframework.web.bind.annotation.RequestParam;
+
 import cz.csob.bpm.components.fes.rest.dto.client.ClientListData;
 
 public interface ClientService {
@@ -30,7 +32,7 @@ public interface ClientService {
 	 * @param accountNumber
 	 * @return
 	 */
-	ClientListData getDisponentListByAccountNumber(String accountNumber);
+	ClientListData getDisponentListByAccountNumber(String accountNumber, String processId);
 	
 
 }

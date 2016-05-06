@@ -8,11 +8,10 @@ public class CSOBBPMRuntimeException extends RuntimeException {
 		super();
 	}
 
-	/*
 	public CSOBBPMRuntimeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
-*/
+	
 	public CSOBBPMRuntimeException(String message, Throwable cause) {
 		super(message, cause);
 	}

@@ -34,7 +34,7 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	@Override
-	public ClientListData getDisponentListByAccountNumber(String accountNumber) {
+	public ClientListData getDisponentListByAccountNumber(String accountNumber, String processId) {
 		return getMockClientListData();
 	}	
 
