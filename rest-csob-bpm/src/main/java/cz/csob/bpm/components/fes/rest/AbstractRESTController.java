@@ -19,7 +19,6 @@ public abstract class AbstractRESTController {
 	
 	@Autowired private BPMRESTTemplate template;
 	
-
 	@ExceptionHandler(value = Exception.class)
 	public void defaultErrorHandler(HttpServletResponse resp, Exception e) throws IOException {
 		
