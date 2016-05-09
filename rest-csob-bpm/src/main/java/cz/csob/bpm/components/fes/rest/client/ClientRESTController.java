@@ -2,6 +2,7 @@ package cz.csob.bpm.components.fes.rest.client;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.slf4j.Logger;
@@ -10,15 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import cz.csob.bpm.components.fault.client.CSOBClientSearchRuntimeException;
 import cz.csob.bpm.components.fes.rest.AbstractRESTController;
 import cz.csob.bpm.components.fes.rest.dto.GetPriorityTaskResponse;
 import cz.csob.bpm.components.fes.rest.dto.client.ClientListData;
@@ -35,6 +38,7 @@ public class ClientRESTController extends AbstractRESTController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ClientRESTController.class);
 	
+	private MappingJackson2JsonView  jsonView = new MappingJackson2JsonView();
 	
 	@Autowired 
 	@Qualifier("THUBClientService")
@@ -82,14 +86,25 @@ public class ClientRESTController extends AbstractRESTController {
 		return result;
 	}
 	
-	@ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR, reason="Backend failure") 
-	@ExceptionHandler(value = SOAPFaultException.class)
-	public ErrorInfo handleSoapFault(SOAPFaultException sfe) {
-		LOG.error("My exception handler!!!!!");
+	// @ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR, reason="Backend failure") 
+	//@ExceptionHandler(value = SOAPFaultException.class)
+	@ExceptionHandler(value = CSOBClientSearchRuntimeException.class)
+	public ResponseEntity<ErrorInfo> handleClientSearchFault(HttpServletRequest request, Exception searchException) {
+		LOG.debug("Entering to REST service exception handling with exception: ", searchException.getClass().getName());
+		String stackTrace = org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(searchException);
 		ErrorInfo errInfo = new ErrorInfo();
-		errInfo.setErrorCode("BACKEND");
-		errInfo.setErrorMessage("Errmsg: " + sfe.getMessage());		
-	    return errInfo; 
+		if (searchException.getCause() instanceof SOAPFaultException) {
+			errInfo.setErrorCode("BACKEND");
+			errInfo.setErrorMessage(searchException.getMessage());
+			errInfo.setStackTrace(stackTrace);
+		} else {
+			errInfo.setErrorCode("SERVICE");
+			errInfo.setErrorMessage(searchException.getMessage());
+			errInfo.setStackTrace(stackTrace);
+		}
+		LOG.debug("Final ErrorInfo for REST service exception handler: " + errInfo.toString());
+		return new ResponseEntity<ErrorInfo>(errInfo, HttpStatus.INTERNAL_SERVER_ERROR);
+	    // return errInfo; 
 	}
 
 	

@@ -14,23 +14,21 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
-import javax.xml.ws.soap.SOAPFaultException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.ibm.cz.csob.thub.THUBCallSequence;
 import com.ibm.cz.csob.thub.THUBServiceHandler;
 
+import cz.csob.bpm.components.fault.client.CSOBClientSearchRuntimeException;
 import cz.csob.bpm.components.fes.rest.dto.client.AccountRole;
 import cz.csob.bpm.components.fes.rest.dto.client.Address;
 import cz.csob.bpm.components.fes.rest.dto.client.ClientListData;
 import cz.csob.bpm.components.fes.rest.dto.client.ClientListItem;
-import cz.csob.bpm.components.fes.rest.dto.client.ErrorInfo;
 import cz.csob.bpm.components.service.rest.client.ClientService;
 import cz.csob.thub.ws.clients.clientlist.GetClientListReq;
 import cz.csob.thub.ws.clients.clientlist.GetClientListReq.Data.Requestset;
@@ -95,127 +93,141 @@ public class ClientServiceThub implements ClientService {
 	@Override
 	public ClientListData getDisponentListByAccountNumber(String accountNumber, String processId) {
 		log.debug("Entering getDisponentListByAccountNumber with accountNumber = " + accountNumber);
-		
+		ClientListData clientListData = new ClientListData();
 		if ((accountNumber == null) || ("".equals(accountNumber))) {
-		//	throw new CSOBBPMException("AccountNumber is not provided. Please provide account number.");
+			throw new CSOBClientSearchRuntimeException("AccountNumber is not provided. Please provide account number.");
 		}
-		
-		// TODO should be parameter of the call - can be null
-		//String piid = "1587898";
-		String piid = processId;
-		
-		ClientListData clientListData = null;
-		
-		// Init proxies - set endpoint and handler
-		GetDrListByProduct_v1HttpProxy drListProxy = setupGetDrListByProduct();
-		GetClientList_v2HttpProxy cliListProxy = setupGetGetClientList();
-		
-		cz.csob.thub.ws.clients.disprights.MetaHeader drListMetaHeader = getDrListMetaheader(piid);
-		
-		log.debug("Set GetDrListByProduct data...");
-		GetDrListByProductReq getDrListByProductReq = new GetDrListByProductReq();
-		ProductFilterList filterList = new ProductFilterList();
-		ProductFilter productFilter = new ProductFilter();
-		
-		// TODO should be call parameter 
-		//productFilter.setProductNumber("9934715");
-		//productFilter.setProductNumber("9946126");
-		productFilter.setProductNumber(accountNumber);
-		
-		// GetDrByProductNumber call constants
-		productFilter.setHomeCurrency(BigInteger.valueOf(39));
-		productFilter.setBankSystem(BigInteger.valueOf(2));
-		RightTypeList rightTypeList = new RightTypeList();
-		rightTypeList.getRightType().add(BigInteger.valueOf(2));
-		productFilter.setRightTypeList(rightTypeList);
-		filterList.getProductFilter().add(productFilter);
-		getDrListByProductReq.setProductFilterList(filterList);
 		
 		try {
-			GetDrListByProductRes dispList = drListProxy.getDrListByProductV1(getDrListByProductReq, drListMetaHeader);
-			BigInteger accountOwnerId = dispList.getResultset().getResult().get(0).getCuid();
-			if (accountOwnerId != null) {
-				
-				// Account owner CUID is returned in direct data
-				log.debug("Found account owner CUID: " + accountOwnerId.toString());	
-									
-				cz.csob.thub.ws.clients.clientlist.MetaHeader cliListListMetaHeader = getCliListMetaheader(piid);
-				GetClientListReq getClientListReqV2 = getCliListReq(accountOwnerId);
-				try {
-					GetClientListRes ownerList = cliListProxy.getClientListV2(getClientListReqV2, cliListListMetaHeader);
-					// Result cliListResult = ownerList.getData().getResultset().getResult().get(0);
-					List<Result> drListResult = ownerList.getData().getResultset().getResult();
+			// TODO should be parameter of the call - can be null
+			//String piid = "1587898";
+			String piid = processId;
+			
+			// clientListData = null;
+			
+			// Init proxies - set endpoint and handler
+			GetDrListByProduct_v1HttpProxy drListProxy = setupGetDrListByProduct();
+			GetClientList_v2HttpProxy cliListProxy = setupGetGetClientList();
+			
+			cz.csob.thub.ws.clients.disprights.MetaHeader drListMetaHeader = getDrListMetaheader(piid);
+			
+			log.debug("Set GetDrListByProduct data...");
+			GetDrListByProductReq getDrListByProductReq = new GetDrListByProductReq();
+			ProductFilterList filterList = new ProductFilterList();
+			ProductFilter productFilter = new ProductFilter();
+			
+			// TODO should be call parameter 
+			//productFilter.setProductNumber("9934715");
+			//productFilter.setProductNumber("9946126");
+			productFilter.setProductNumber(accountNumber);
+			
+			// GetDrByProductNumber call constants
+			productFilter.setHomeCurrency(BigInteger.valueOf(39));
+			productFilter.setBankSystem(BigInteger.valueOf(2));
+			RightTypeList rightTypeList = new RightTypeList();
+			rightTypeList.getRightType().add(BigInteger.valueOf(2));
+			productFilter.setRightTypeList(rightTypeList);
+			filterList.getProductFilter().add(productFilter);
+			getDrListByProductReq.setProductFilterList(filterList);
+			
+			try {
+				GetDrListByProductRes dispList = drListProxy.getDrListByProductV1(getDrListByProductReq, drListMetaHeader);
+				BigInteger accountOwnerId = dispList.getResultset().getResult().get(0).getCuid();
+				if (accountOwnerId != null) {
 					
-					//for (Result cliListResult : ownerList.getData().getResultset().getResult()) {
-					if (!drListResult.isEmpty()) {		
-						Result drResult = drListResult.get(0);
-						log.debug("Account owner found");
+					// Account owner CUID is returned in direct data
+					log.debug("Found account owner CUID: " + accountOwnerId.toString());	
+										
+					cz.csob.thub.ws.clients.clientlist.MetaHeader cliListListMetaHeader = getCliListMetaheader(piid);
+					GetClientListReq getClientListReqV2 = getCliListReq(accountOwnerId);
+					try {
+						GetClientListRes ownerList = cliListProxy.getClientListV2(getClientListReqV2, cliListListMetaHeader);
+						// Result cliListResult = ownerList.getData().getResultset().getResult().get(0);
+						List<Result> drListResult = ownerList.getData().getResultset().getResult();
 						
-						clientListData = new ClientListData();
-						ArrayList<ClientListItem> clientList = new ArrayList<ClientListItem>();						
-						
-						ClientListItem ownerClientListItem = mapClientToVO(drResult, accountNumber, "owner");
-						if (ownerClientListItem != null) {
-							clientList.add(ownerClientListItem);
-						}	
-					    
-						// Iterate over all disponents 
-						for (cz.csob.thub.ws.clients.disprights.GetDrListByProductRes.Resultset.Result dispRightResult : dispList.getResultset().getResult()) {
-							RightList rightList = dispRightResult.getRightList();
-							if (rightList != null) { 
-								for (Right right : rightList.getRight()) {
-									DisponentList disponentsList = right.getDisponentList();
-									for (Disponent disponent : disponentsList.getDisponent()) {
-										BigInteger disponentId = disponent.getIdCmdPartyPk();
-										log.debug("Found disponent " + disponentId);
-										cliListListMetaHeader = getCliListMetaheader(piid);
-										getClientListReqV2 = getCliListReq(disponentId);
-										try {
-											GetClientListRes dispPersonList = cliListProxy.getClientListV2(getClientListReqV2, cliListListMetaHeader);
-											// Result cliListResult = ownerList.getData().getResultset().getResult().get(0);
-											List<Result> dispListResult = dispPersonList.getData().getResultset().getResult();
-											if (!dispListResult.isEmpty()) {		
-												Result disponentResult = dispListResult.get(0);
-												log.debug("Disponent found");
-												ClientListItem disponentClientListItem = mapClientToVO(disponentResult, accountNumber, "delegate");
-												if (disponentClientListItem != null) {
-													clientList.add(disponentClientListItem);
-												}	
-											}										
-										} catch (cz.csob.thub.ws.clients.clientlist.GeneralFaultV1 clfe) {
-											log.error("THUB Service GetClientList_v2 failed for CUID: ", clfe);			
+						//for (Result cliListResult : ownerList.getData().getResultset().getResult()) {
+						if (!drListResult.isEmpty()) {		
+							Result drResult = drListResult.get(0);
+							log.debug("Account owner found");
+							
+							// clientListData = new ClientListData();
+							ArrayList<ClientListItem> clientList = new ArrayList<ClientListItem>();						
+							
+							ClientListItem ownerClientListItem = mapClientToVO(drResult, accountNumber, "owner");
+							if (ownerClientListItem != null) {
+								clientList.add(ownerClientListItem);
+							}	
+						    
+							// Iterate over all disponents 
+							for (cz.csob.thub.ws.clients.disprights.GetDrListByProductRes.Resultset.Result dispRightResult : dispList.getResultset().getResult()) {
+								RightList rightList = dispRightResult.getRightList();
+								if (rightList != null) { 
+									for (Right right : rightList.getRight()) {
+										DisponentList disponentsList = right.getDisponentList();
+										for (Disponent disponent : disponentsList.getDisponent()) {
+											if (disponent != null) {
+												BigInteger disponentId = disponent.getIdCmdPartyPk();
+												log.debug("Found disponent " + disponentId);
+												cliListListMetaHeader = getCliListMetaheader(piid);
+												getClientListReqV2 = getCliListReq(disponentId);
+												try {
+													GetClientListRes dispPersonList = cliListProxy.getClientListV2(getClientListReqV2, cliListListMetaHeader);
+													// Result cliListResult = ownerList.getData().getResultset().getResult().get(0);
+													List<Result> dispListResult = dispPersonList.getData().getResultset().getResult();
+													if (!dispListResult.isEmpty()) {		
+														Result disponentResult = dispListResult.get(0);
+														log.debug("Disponent found");
+														ClientListItem disponentClientListItem = mapClientToVO(disponentResult, accountNumber, "delegate");
+														if (disponentClientListItem != null) {
+															clientList.add(disponentClientListItem);
+														}	
+													}										
+												} catch (cz.csob.thub.ws.clients.clientlist.GeneralFaultV1 clfe) {
+													log.error("THUB Service GetClientList_v2 failed for CUID: " + disponentId.toString(), clfe);
+													throw clfe;
+												}
+											}	
 										}
 									}
-								}
-							}	
-						}						
-						clientListData.setClientList(clientList);						
+								}	
+							}						
+							clientListData.setClientList(clientList);						
+						}
+					} catch (cz.csob.thub.ws.clients.clientlist.GeneralFaultV1 clfe) {
+						log.error("THUB Service GetClientList_v2 failed for CUID: " + accountOwnerId.toString(), clfe);
+						throw clfe;
 					}
-				} catch (cz.csob.thub.ws.clients.clientlist.GeneralFaultV1 clfe) {
-					log.error("THUB Service GetClientList_v2 failed for CUID: ", clfe);			
-				}
-			}			
-		} catch (cz.csob.thub.ws.clients.disprights.GeneralFaultV1 drlfe) {
-			log.error("THUB Service GetDrListByProduct failed ", drlfe);
+				}			
+			} catch (cz.csob.thub.ws.clients.disprights.GeneralFaultV1 drlfe) {
+				log.error("THUB Service GetDrListByProduct failed for account number " + accountNumber, drlfe);
+				throw drlfe;
+			}
+		} catch (Exception clsException) {
+			StringBuilder errMsgSB = new StringBuilder("Owner and disponents search for ").append(accountNumber);
+			errMsgSB.append("(processId = ").append(processId).append(")").append(" failed with error ");
+			errMsgSB.append(clsException.getMessage());
+			String errorMsg = errMsgSB.toString(); 
+			log.error(errorMsg, clsException);
+			throw new CSOBClientSearchRuntimeException(errorMsg, clsException);
 		}
-		
 		return clientListData;
 	}
 	
 	private ClientListItem mapClientToVO(Result drResult, String accountNumber, String roleType) {
 		ClientListItem clientListItem = null;
-		Company companyOwner = drResult.getCompany();
-		Person personOwner = drResult.getPerson();						
-		if (personOwner != null) {
-			PersonRow personRow = personOwner.getPersonRow().get(0); 
-			log.debug("Found person type Physical Person " + personOwner.getPersonRow().get(0).getIdCmdPartyPk());
+		Company company = drResult.getCompany();
+		Person person = drResult.getPerson();						
+		if (person != null) {			
+			PersonRow personRow = person.getPersonRow().get(0);
+
+			// Basic person data
+			log.debug("Found person type Physical Person " + personRow.getIdCmdPartyPk());
 			clientListItem = new ClientListItem();
 			clientListItem.setCuid(personRow.getIdCmdPartyPk().toString());
 			clientListItem.setType("physical");
 			clientListItem.setFirstName(personRow.getName());
 			clientListItem.setLastName(personRow.getSurname());
 			clientListItem.setBirthNumber(personRow.getFictBirthNumber());
-			//clientListItem.setBirthDate(personRow.getDateOfBirth());
 			if (personRow.getDateOfBirth() != null) {
 				log.debug("Date of Birth " + personRow.getDateOfBirth().toString() + " - " + personRow.getDateOfBirth().toGregorianCalendar().getTime());
 				Date birthDate = personRow.getDateOfBirth().toGregorianCalendar().getTime();
@@ -239,8 +251,8 @@ public class ClientServiceThub implements ClientService {
 			accountRoleList.add(accountRole);
 			clientListItem.setAccountRoles(accountRoleList);
 		} else {
-			CompanyRow companyRow = companyOwner.getCompanyRow().get(0);
-			log.debug("Found person type Legal Person " + companyOwner.getCompanyRow().get(0).getIdCmdPartyPk());
+			CompanyRow companyRow = company.getCompanyRow().get(0);
+			log.debug("Found person type Legal Person " + company.getCompanyRow().get(0).getIdCmdPartyPk());
 			clientListItem = new ClientListItem();
 			clientListItem.setCuid(companyRow.getIdCmdPartyPk().toString());
 			clientListItem.setType("legal");

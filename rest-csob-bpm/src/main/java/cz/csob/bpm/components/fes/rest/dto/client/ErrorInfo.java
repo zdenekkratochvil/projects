@@ -8,7 +8,7 @@ public class ErrorInfo implements Serializable {
 	
 	private String errorMessage;
 	
-	private String processId;
+	private String stackTrace; 
 
 	public String getErrorCode() {
 		return errorCode;
@@ -26,18 +26,18 @@ public class ErrorInfo implements Serializable {
 		this.errorMessage = errorMessage;
 	}
 
-	public String getProcessId() {
-		return processId;
+	public String getStackTrace() {
+		return stackTrace;
 	}
 
-	public void setProcessId(String processId) {
-		this.processId = processId;
+	public void setStackTrace(String stackTrace) {
+		this.stackTrace = stackTrace;
 	}
 
 	@Override
 	public String toString() {
 		return "ErrorInfo [errorCode=" + errorCode + ", errorMessage="
-				+ errorMessage + ", processId=" + processId + "]";
+				+ errorMessage + ", stackTrace=\n" + stackTrace + "]";
 	}
 	
 }
